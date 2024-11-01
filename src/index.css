@@ -4,6 +4,118 @@
   padding: 0px;
   box-sizing: border-box;
 }
+:root {
+  /* Colors */
+  --color-primary: #007aff;
+  --color-primary-light: rgba(0, 122, 255, 0.1);
+  --color-primary-lighter: rgba(0, 122, 255, 0.15);
+
+  --color-background: #ffffff;
+  --color-background-dark: #1a1a1a;
+  --color-background-darker: #2c2c2c;
+
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+  --color-text-light: #ffffff;
+
+  --color-error: #ff3b30;
+  --color-success: #34c759;
+  --color-warning: #ffcc00;
+
+  --color-border: rgba(51, 51, 51, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  /* Main Background Colors */
+  --color-bg-primary: #f8fafc; /* Light grayish blue for main background */
+  --color-bg-secondary: #ffffff; /* White for cards and surfaces */
+  --color-bg-tertiary: #fafbfc; /* Slightly off-white for alternating sections */
+  --color-bg-gradient-start: #eef2ff;
+  --color-bg-gradient-end: #f8fafc;
+  /* Text Colors */
+  --color-text-primary: #2d3748; /* Dark gray for primary text */
+  --color-text-secondary: #718096; /* Medium gray for secondary text */
+  --color-text-light: #ffffff; /* White text */
+
+  /* Brand/Action Colors */
+  --color-primary: #4f46e5; /* Indigo for primary actions */
+  --color-primary-light: #e0e7ff; /* Light indigo for hover states */
+  --color-primary-dark: #4338ca; /* Dark indigo for active states */
+
+  /* Status Colors */
+  --color-success: #059669; /* Green */
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b; /* Amber */
+  --color-warning-light: #fef3c7;
+  --color-error: #dc2626; /* Red */
+  --color-error-light: #fee2e2;
+
+  /* Border & Shadow Colors */
+  --color-border: #e2e8f0;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+
+  /* Shadow Styles */
+  --shadow-sm: 0 1px 2px var(--color-shadow);
+  --shadow-md: 0 4px 6px -1px var(--color-shadow);
+  --shadow-lg: 0 10px 15px -3px var(--color-shadow);
+
+  /* Gradient Backgrounds */
+  --gradient-subtle: linear-gradient(to right, #f5f7fa, #ffffff);
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+
+  /* Typography */
+  --font-size-xs: 1.2rem;
+  --font-size-sm: 1.4rem;
+  --font-size-base: 1.6rem;
+  --font-size-lg: 1.8rem;
+  --font-size-xl: 2.4rem;
+  --font-size-xxl: 3.2rem;
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Z-index */
+  --z-index-base: 1;
+  --z-index-header: 1000;
+  --z-index-modal: 1100;
+  --z-index-overlay: 900;
+  --z-index-dropdown: 800;
+  --z-index-tooltip: 700;
+
+  /* Spacing */
+  --spacing-xxs: 0.4rem;
+  --spacing-xs: 0.8rem;
+  --spacing-sm: 1.2rem;
+  --spacing-md: 1.6rem;
+  --spacing-lg: 2.4rem;
+  --spacing-xl: 3.2rem;
+  --spacing-xxl: 4.8rem;
+
+  /* Border Radius */
+  --border-radius-sm: 0.4rem;
+  --border-radius-md: 0.8rem;
+  --border-radius-lg: 1.2rem;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --breakpoint-phone: 48rem; /* 480px */
+  --breakpoint-tablet: 76.8rem; /* 768px */
+  --breakpoint-desktop: 102.4rem; /* 1024px */
+  --breakpoint-large: 144rem; /* 1440px */
+
+  /* Media Query Strings - can be used with @media (max-width: var(--media-phone)) */
+  --media-phone: 48rem;
+  --media-tablet: 76.8rem;
+  --media-desktop: 102.4rem;
+  --media-large: 144rem;
+}
 
 html {
   font-family: 'Times New Roman', Times, serif;
@@ -20,4 +132,17 @@ html {
   --background-color: #414141;
   --gray-text: #525252;
   scroll-behavior: smooth;
+}
+
+body {
+  background: #f8fafc;
+  background-image: linear-gradient(
+      120deg,
+      rgba(247, 249, 251, 0.8) 0%,
+      rgba(242, 244, 247, 0.8) 100%
+    ),
+    radial-gradient(at top left, rgba(79, 70, 229, 0.03) 0%, transparent 60%),
+    radial-gradient(at top right, rgba(99, 102, 241, 0.03) 0%, transparent 60%);
+  min-height: 100vh;
+  min-height: 100vh;
 }

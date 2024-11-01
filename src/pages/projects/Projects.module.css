@@ -1,0 +1,128 @@
+/* src/pages/Projects/Projects.module.css */
+.container {
+  padding: var(--spacing-lg);
+  min-height: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.titleSection {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md);
+}
+
+.title {
+  font-size: var(--font-size-xxl);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.projectCount {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.addIcon {
+  font-size: var(--font-size-lg);
+  line-height: 1;
+}
+
+.content {
+  margin-top: var(--spacing-lg);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxl);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 4.8rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.emptyTitle {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.emptyText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xl);
+}
+
+.emptyButton {
+  padding: var(--spacing-sm) var(--spacing-xl);
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.emptyButton:hover {
+  opacity: 0.9;
+}
+.addButton {
+  background: var(--gradient-primary);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  color: var(--color-text-light);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.addButton:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+@media (max-width: 76rem) {
+  .container {
+    padding: var(--spacing-md);
+  }
+
+  .header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .title {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (max-width: 48rem) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .addButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

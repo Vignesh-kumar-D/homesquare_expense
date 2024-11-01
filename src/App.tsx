@@ -3,6 +3,10 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import { colors } from './styles/colors';
+import Projects from './pages/projects';
+import './App.css';
+import ProjectDetails from './pages/projects/ProjectDetails';
+import Employees from './pages/employees/Employees';
 
 const mockUser = {
   name: 'John Doe',
@@ -12,11 +16,22 @@ const mockUser = {
 
 // Page components (we'll create these next)
 const Dashboard = () => <div>Dashboard Page</div>;
-const Projects = () => <div>Projects Page</div>;
-const Employees = () => <div>Employees Page</div>;
+// const Projects = () => <div>Projects Page</div>;
+// const Employees = () => <div>Employees Page</div>;
 const Transactions = () => <div>Transactions Page</div>;
 const MyExpenses = () => <div>My Expenses Page</div>;
 const Login = () => <div>Login Page</div>;
+
+const ProjectRoutes = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Projects />} />
+        <Route path="/:projectId" element={<ProjectDetails />} />
+      </Routes>
+    </>
+  );
+};
 
 const App: React.FC = () => {
   const handleLogout = () => {
@@ -72,9 +87,12 @@ const App: React.FC = () => {
 
           {/* Admin Only Routes */}
           <Route
-            path="/projects"
+            path="/projects/*"
             element={
-              <ProtectedRoute element={<Projects />} allowedRoles={['admin']} />
+              <ProtectedRoute
+                element={<ProjectRoutes />}
+                allowedRoles={['admin']}
+              />
             }
           />
           <Route
@@ -120,15 +138,13 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column' as const,
-    backgroundColor: colors.appBg,
+    // backgroundColor: colors.appBg,
     color: colors.textPrimary, // Default text color for the app
   },
   mainContent: {
     flex: 1,
     padding: '20px',
-    // Add a subtle gradient overlay to the background
-    background:
-      'linear-gradient(180deg, rgba(26,26,26,0.9) 0%, rgba(26,26,26,1) 100%)',
+    // Add a subtle gradient overlay to the
   },
 } as const;
 
