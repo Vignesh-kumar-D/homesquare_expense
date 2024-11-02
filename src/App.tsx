@@ -18,17 +18,6 @@ interface PrivateRouteProps {
   allowedRoles?: Array<'admin' | 'accountant' | 'employee'>;
 }
 
-const ProjectRoutes = () => {
-  return (
-    <>
-      <Routes>
-        <Route path="/" element={<Projects />} />
-        <Route path="/:projectId" element={<ProjectDetails />} />
-      </Routes>
-    </>
-  );
-};
-
 const PrivateRoute: React.FC<PrivateRouteProps> = ({
   element,
   allowedRoles = [],
@@ -60,12 +49,27 @@ const App: React.FC = () => {
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<Login />} />
-
         <Route
           path="/"
           element={
             <Layout>
-              <PrivateRoute element={<ProjectRoutes />} />
+              <PrivateRoute element={<Projects />} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <Layout>
+              <PrivateRoute element={<Projects />} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/projects/:projectId"
+          element={
+            <Layout>
+              <PrivateRoute element={<ProjectDetails />} />
             </Layout>
           }
         />

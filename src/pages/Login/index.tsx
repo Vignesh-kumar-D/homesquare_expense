@@ -24,7 +24,7 @@ const Login: React.FC = () => {
       mobile: '9876543212',
       role: 'admin',
     });
-    navigate('/');
+    navigate('/projects');
   };
 
   return (
