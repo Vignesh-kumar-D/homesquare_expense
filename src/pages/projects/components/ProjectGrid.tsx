@@ -35,13 +35,13 @@ const ProjectGrid: React.FC<ProjectGridProps> = ({
               <div className={styles.budgetInfo}>
                 <div className={styles.label}>Budget</div>
                 <div className={styles.amount}>
-                  ${project.totalBudget.toLocaleString()}
+                  ₹{project.totalBudget.toLocaleString()}
                 </div>
               </div>
               <div className={styles.budgetInfo}>
                 <div className={styles.label}>Spent</div>
                 <div className={styles.amount}>
-                  ${project.spentAmount.toLocaleString()}
+                  ₹{project.spentAmount.toLocaleString()}
                 </div>
               </div>
             </div>

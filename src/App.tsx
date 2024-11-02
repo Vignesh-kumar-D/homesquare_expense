@@ -2,24 +2,19 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
-import { colors } from './styles/colors';
 import Projects from './pages/projects';
 import './App.css';
 import ProjectDetails from './pages/projects/ProjectDetails';
-import Employees from './pages/employees/Employees';
-
+import Employees from './pages/employees';
+import Dashboard from './pages/dashboard';
+import Transactions from './pages/transactions';
+import MyExpenses from './pages/myexpenses';
 const mockUser = {
   name: 'John Doe',
   role: 'admin' as const,
   isAuthenticated: true,
 };
 
-// Page components (we'll create these next)
-const Dashboard = () => <div>Dashboard Page</div>;
-// const Projects = () => <div>Projects Page</div>;
-// const Employees = () => <div>Employees Page</div>;
-const Transactions = () => <div>Transactions Page</div>;
-const MyExpenses = () => <div>My Expenses Page</div>;
 const Login = () => <div>Login Page</div>;
 
 const ProjectRoutes = () => {
@@ -138,8 +133,6 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column' as const,
-    // backgroundColor: colors.appBg,
-    color: colors.textPrimary, // Default text color for the app
   },
   mainContent: {
     flex: 1,
