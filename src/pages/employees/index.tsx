@@ -80,10 +80,10 @@ const Employees: React.FC = () => {
               <div className={styles.allocationInfo}>
                 <div className={styles.amounts}>
                   <span className={styles.allocated}>
-                    ${employee.totalAllocated.toLocaleString()}
+                    ₹{employee.totalAllocated.toLocaleString()}
                   </span>
                   <span className={styles.spent}>
-                    ${employee.totalSpent.toLocaleString()}
+                    ₹{employee.totalSpent.toLocaleString()}
                   </span>
                 </div>
 
@@ -127,10 +127,10 @@ const Employees: React.FC = () => {
                       </div>
                       <div className={styles.projectAmounts}>
                         <span className={styles.allocated}>
-                          ${project.allocated.toLocaleString()}
+                          ₹{project.allocated.toLocaleString()}
                         </span>
                         <span className={styles.spent}>
-                          ${project.spent.toLocaleString()}
+                          ₹{project.spent.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -154,7 +154,7 @@ const Employees: React.FC = () => {
                           {transaction.date}
                         </span>
                         <span className={styles.transactionAmount}>
-                          ${transaction.amount.toLocaleString()}
+                          ₹{transaction.amount.toLocaleString()}
                         </span>
                       </div>
                     </div>

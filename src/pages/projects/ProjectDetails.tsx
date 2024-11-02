@@ -165,7 +165,7 @@ const ProjectDetails: React.FC = () => {
                       }
                     </span>
                     <span className={styles.amount}>
-                      ${allocation.amount.toLocaleString()}
+                      ₹{allocation.amount.toLocaleString()}
                     </span>
                   </div>
                   <div className={styles.allocationMeta}>

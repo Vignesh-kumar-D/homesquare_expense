@@ -31,10 +31,10 @@ const TopProjects: React.FC = () => {
               <h3 className={styles.projectName}>{project.name}</h3>
               <div className={styles.projectMeta}>
                 <span className={styles.budget}>
-                  Budget: ${project.budget.toLocaleString()}
+                  Budget: ₹{project.budget.toLocaleString()}
                 </span>
                 <span className={styles.spent}>
-                  Spent: ${project.spent.toLocaleString()}
+                  Spent: ₹{project.spent.toLocaleString()}
                 </span>
               </div>
             </div>

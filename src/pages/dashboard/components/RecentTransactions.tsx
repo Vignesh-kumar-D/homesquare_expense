@@ -27,7 +27,7 @@ const RecentTransactions: React.FC = () => {
                   {transaction.projectName}
                 </span>
                 <span className={styles.amount}>
-                  ${transaction.amount.toLocaleString()}
+                  ₹{transaction.amount.toLocaleString()}
                 </span>
               </div>
               <div className={styles.secondary}>
