@@ -1,25 +1,13 @@
 // src/pages/Projects/components/ProjectDetails/ProjectDetails.tsx
 import React, { useState } from 'react';
 import styles from './ProjectDetails.module.css';
-import { Project } from './types';
-import { useNavigate, useParams } from 'react-router-dom';
-
-interface Employee {
-  id: string;
-  name: string;
-}
-
+import { useNavigate } from 'react-router-dom';
 interface Allocation {
   id: string;
   employeeId: string;
   amount: number;
   date: string;
   description: string;
-}
-
-interface ProjectDetailsProps {
-  project: Project;
-  onBack: () => void;
 }
 
 const mockProject = {
@@ -41,7 +29,7 @@ const mockEmployees = [
   { id: '3', name: 'Mike Johnson' },
 ];
 const ProjectDetails: React.FC = () => {
-  const { projectId } = useParams();
+  // const { projectId } = useParams(); // id to be used in real app
   const navigate = useNavigate();
   // In real app, fetch project using projectId
   const project = mockProject;

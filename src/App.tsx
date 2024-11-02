@@ -18,12 +18,6 @@ interface PrivateRouteProps {
   allowedRoles?: Array<'admin' | 'accountant' | 'employee'>;
 }
 
-const mockUser = {
-  name: 'John Doe',
-  role: 'admin' as const,
-  isAuthenticated: true,
-};
-
 const ProjectRoutes = () => {
   return (
     <>
