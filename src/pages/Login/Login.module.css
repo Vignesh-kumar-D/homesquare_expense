@@ -125,10 +125,6 @@
   font-size: var(--font-size-sm);
 }
 
-.passwordInput {
-  position: relative;
-}
-
 .forgotPassword {
   align-self: flex-end;
   font-size: var(--font-size-sm);

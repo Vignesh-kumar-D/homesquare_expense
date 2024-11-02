@@ -3,263 +3,303 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md) var(--spacing-xl);
-  background: linear-gradient(to right, var(--color-background), #f8f8f8);
-  box-shadow: 0 0.2rem 1rem var(--color-shadow);
-  margin: var(--spacing-xs) var(--spacing-xl);
-  border-radius: var(--border-radius-md);
-  border: 0.1rem solid var(--color-border);
-  position: relative;
-  z-index: var(--z-index-header);
-  transition: all var(--transition-normal);
+  padding: 1.6rem 3.2rem;
+  background: linear-gradient(to right, var(--color-bg-secondary), #f8f8f8);
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
+  height: 7rem;
+  position: sticky;
+  top: 0.8rem;
+  z-index: 1000;
+  margin: 0.8rem 3.2rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid rgba(51, 51, 51, 0.1);
 }
 
 .logo {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
+  font-size: 1.6rem;
+  font-weight: 700;
   color: var(--color-text-primary);
   cursor: pointer;
   user-select: none;
-  transition: color var(--transition-normal);
+  transition: all 0.2s ease;
+}
+
+.logo:hover {
+  color: var(--color-primary);
 }
 
 /* Desktop Navigation */
 .desktopNav {
   display: flex;
+  gap: 2rem;
   align-items: center;
-  gap: var(--spacing-lg);
 }
 
 .navLink {
   text-decoration: none;
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  transition: all var(--transition-normal);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
+  font-size: 1.4rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
-.navLink:hover,
-.navLink.active {
+.navLink:hover {
   color: var(--color-primary);
-  background-color: var(--color-primary-lighter);
+  background-color: rgba(0, 122, 255, 0.1);
+}
+
+.navLink.active {
+  background-color: rgba(0, 122, 255, 0.15);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Desktop User Section */
+.desktopUserSection {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.userInfo:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.userName {
+  font-size: 1.4rem;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.userRole {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
 }
 
 .desktopLogoutButton {
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: 0.8rem 1.6rem;
   background-color: transparent;
   color: var(--color-error);
   border: 0.1rem solid var(--color-error);
-  border-radius: var(--border-radius-sm);
+  border-radius: 0.4rem;
   cursor: pointer;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  transition: all var(--transition-normal);
-  margin-left: var(--spacing-md);
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .desktopLogoutButton:hover {
   background-color: var(--color-error);
-  color: var(--color-text-light);
+  color: white;
 }
 
 /* Mobile Elements */
-.menuButton,
 .mobileUserInfo {
   display: none;
 }
 
-/* Menu Overlay */
-.menuOverlay {
+.menuButton {
   display: none;
 }
 
-@media (max-width: 78rem) {
+/* Mobile Menu */
+.menuOverlay {
+  position: fixed;
+  top: 0;
+  right: -30rem;
+  bottom: 0;
+  width: 30rem;
+  background: var(--color-bg-secondary);
+  transition: right 0.3s ease;
+  z-index: 999;
+  box-shadow: -0.2rem 0 1rem rgba(0, 0, 0, 0.1);
+}
+
+.menuOverlay.show {
+  right: 0;
+}
+
+.overlayContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2.4rem;
+}
+
+.overlayUserInfo {
+  text-align: center;
+  padding: 2.4rem;
+  border-bottom: 0.1rem solid var(--color-border);
+  cursor: pointer;
+  margin-bottom: 2.4rem;
+  transition: all 0.2s ease;
+}
+
+.overlayUserInfo:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.overlayUserName {
+  font-size: 1.8rem;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.overlayUserRole {
+  font-size: 1.4rem;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+.overlayLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+}
+
+.overlayLink {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: 1.6rem;
+  padding: 1.2rem;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.overlayLink:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.overlayLink.active {
+  background-color: rgba(0, 122, 255, 0.15);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.overlayLogoutButton {
+  margin-top: auto;
+  padding: 1.2rem;
+  background-color: var(--color-error);
+  color: white;
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.overlayLogoutButton:hover {
+  opacity: 0.9;
+}
+
+/* Hamburger Button */
+.menuButton {
+  width: 2.4rem;
+  height: 2rem;
+  position: relative;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.menuButton span {
+  display: block;
+  width: 100%;
+  height: 0.2rem;
+  background-color: var(--color-text-primary);
+  position: absolute;
+  left: 0;
+  transition: all 0.3s ease;
+}
+
+.menuButton span:first-child {
+  top: 0;
+}
+
+.menuButton span:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.menuButton span:last-child {
+  bottom: 0;
+}
+
+.menuButton.menuOpen span:first-child {
+  transform: rotate(45deg);
+  top: 50%;
+}
+
+.menuButton.menuOpen span:nth-child(2) {
+  opacity: 0;
+}
+
+.menuButton.menuOpen span:last-child {
+  transform: rotate(-45deg);
+  top: 50%;
+}
+
+/* Media Queries */
+@media (max-width: 76rem) {
   .header {
     margin: 0;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 1.2rem 1.6rem;
     border-radius: 0;
   }
 
-  .desktopNav {
+  .desktopNav,
+  .desktopUserSection {
     display: none;
   }
 
   .mobileUserInfo {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
   }
 
-  .userName {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-medium);
-  }
-
-  .userRole {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-    text-transform: capitalize;
-  }
-
-  /* Menu Button */
   .menuButton {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 2.4rem;
-    height: 2rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: var(--z-index-modal);
-  }
-
-  .menuButton span {
-    width: 100%;
-    height: 0.2rem;
-    background-color: var(--color-text-primary);
-    transition: all var(--transition-normal);
-    transform-origin: left;
-  }
-
-  .menuButton.menuOpen span {
-    background-color: var(--color-text-light);
-  }
-
-  .menuButton.menuOpen span:first-child {
-    transform: rotate(45deg);
-  }
-
-  .menuButton.menuOpen span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .menuButton.menuOpen span:last-child {
-    transform: rotate(-45deg);
-  }
-
-  /* Menu Overlay */
-  .menuOverlay {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      135deg,
-      var(--color-background-dark) 0%,
-      var(--color-background-darker) 100%
-    );
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-slow);
-    z-index: var(--z-index-overlay);
-  }
-
-  .menuOverlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .overlayContent {
-    width: 100%;
-    padding: var(--spacing-xl);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .overlayUserInfo {
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .overlayUserName {
     display: block;
-    font-size: var(--font-size-lg);
-    color: var(--color-text-light);
-    font-weight: var(--font-weight-bold);
-  }
-
-  .overlayUserRole {
-    display: block;
-    font-size: var(--font-size-base);
-    color: var(--color-text-light);
-    opacity: 0.8;
-    text-transform: capitalize;
-  }
-
-  .overlayLinks {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    align-items: center;
-    margin: var(--spacing-xl) 0;
-  }
-
-  .overlayLink {
-    font-size: var(--font-size-xl);
-    color: var(--color-text-light);
-    text-decoration: none;
-    position: relative;
-    padding: var(--spacing-xs);
-    transition: all var(--transition-normal);
-  }
-
-  .overlayLink::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 0.2rem;
-    background-color: var(--color-text-light);
-    transition: all var(--transition-normal);
-    transform: translateX(-50%);
-  }
-
-  .overlayLink:hover::after,
-  .overlayLink.active::after {
-    width: 100%;
-  }
-
-  .overlayLogoutButton {
-    margin-top: auto;
-    padding: var(--spacing-sm) var(--spacing-xl);
-    background-color: var(--color-error);
-    color: var(--color-text-light);
-    border: none;
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-medium);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-  }
-
-  .overlayLogoutButton:hover {
-    opacity: 0.9;
   }
 }
 
 @media (max-width: 48rem) {
   .header {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: 1rem;
   }
 
   .logo {
-    font-size: var(--font-size-sm);
+    font-size: 1.4rem;
+  }
+
+  .menuOverlay {
+    width: 100%;
+    right: -100%;
+  }
+
+  .overlayUserInfo {
+    padding: 1.6rem;
   }
 
   .overlayLink {
-    font-size: var(--font-size-lg);
-  }
-
-  .overlayLinks {
-    gap: var(--spacing-md);
+    padding: 1.6rem;
   }
 }

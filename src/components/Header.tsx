@@ -2,14 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
+import { useAuth } from '../context/AuthContext';
 
-interface HeaderProps {
-  userName: string;
-  userRole: 'admin' | 'accountant' | 'employee';
-  onLogout: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
+const Header: React.FC = () => {
+  const { user, logout } = useAuth();
+  const userName = user?.name;
+  const userRole = user?.role;
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -55,15 +53,14 @@ const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
             Dashboard
           </NavLink>
 
+          <NavLink to="/projects" className={getNavLinkClass}>
+            Projects
+          </NavLink>
+
           {userRole === 'admin' && (
-            <>
-              <NavLink to="/projects" className={getNavLinkClass}>
-                Projects
-              </NavLink>
-              <NavLink to="/employees" className={getNavLinkClass}>
-                Employees
-              </NavLink>
-            </>
+            <NavLink to="/employees" className={getNavLinkClass}>
+              Employees
+            </NavLink>
           )}
 
           {(userRole === 'admin' || userRole === 'accountant') && (
@@ -75,14 +72,34 @@ const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
           <NavLink to="/my-expenses" className={getNavLinkClass}>
             My Expenses
           </NavLink>
-
-          <button className={styles.desktopLogoutButton} onClick={onLogout}>
-            Logout
-          </button>
         </nav>
 
+        {/* Desktop User Section */}
+        <div className={styles.desktopUserSection}>
+          <div
+            className={styles.userInfo}
+            onClick={() => navigate('/profile')}
+            role="button"
+            tabIndex={0}
+          >
+            <span className={styles.userName}>{userName}</span>
+            <span className={styles.userRole}>({userRole})</span>
+          </div>
+          <button className={styles.desktopLogoutButton} onClick={logout}>
+            Logout
+          </button>
+        </div>
+
         {/* Mobile User Info */}
-        <div className={styles.mobileUserInfo}>
+        <div
+          className={styles.mobileUserInfo}
+          onClick={() => {
+            setIsMenuOpen(false);
+            navigate('/profile');
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <span className={styles.userName}>{userName}</span>
           <span className={styles.userRole}>({userRole})</span>
         </div>
@@ -105,7 +122,15 @@ const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
       {/* Mobile Menu Overlay */}
       <div className={`${styles.menuOverlay} ${isMenuOpen ? styles.show : ''}`}>
         <nav className={styles.overlayContent}>
-          <div className={styles.overlayUserInfo}>
+          <div
+            className={styles.overlayUserInfo}
+            onClick={() => {
+              navigate('/profile');
+              setIsMenuOpen(false);
+            }}
+            role="button"
+            tabIndex={0}
+          >
             <span className={styles.overlayUserName}>{userName}</span>
             <span className={styles.overlayUserRole}>({userRole})</span>
           </div>
@@ -119,23 +144,22 @@ const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
               Dashboard
             </NavLink>
 
+            <NavLink
+              to="/projects"
+              className={getMobileNavLinkClass}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Projects
+            </NavLink>
+
             {userRole === 'admin' && (
-              <>
-                <NavLink
-                  to="/projects"
-                  className={getMobileNavLinkClass}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Projects
-                </NavLink>
-                <NavLink
-                  to="/employees"
-                  className={getMobileNavLinkClass}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Employees
-                </NavLink>
-              </>
+              <NavLink
+                to="/employees"
+                className={getMobileNavLinkClass}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Employees
+              </NavLink>
             )}
 
             {(userRole === 'admin' || userRole === 'accountant') && (
@@ -160,7 +184,7 @@ const Header: React.FC<HeaderProps> = ({ userName, userRole, onLogout }) => {
           <button
             className={styles.overlayLogoutButton}
             onClick={() => {
-              onLogout();
+              logout();
               setIsMenuOpen(false);
             }}
           >
