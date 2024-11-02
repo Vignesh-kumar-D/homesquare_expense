@@ -29,10 +29,10 @@ const EmployeeAllocations: React.FC = () => {
             <div className={styles.allocationInfo}>
               <div className={styles.amounts}>
                 <span className={styles.allocated}>
-                  ${employee.allocated.toLocaleString()}
+                  ₹{employee.allocated.toLocaleString()}
                 </span>
                 <span className={styles.spent}>
-                  ${employee.spent.toLocaleString()}
+                  ₹{employee.spent.toLocaleString()}
                 </span>
               </div>
               <div className={styles.progressBar}>
