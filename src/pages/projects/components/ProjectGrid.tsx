@@ -39,7 +39,7 @@ const ProjectGrid: React.FC<ProjectGridProps> = ({
                 </div>
               </div>
               <div className={styles.budgetInfo}>
-                <div className={styles.label}>Spent</div>
+                <div className={styles.label}>Allocated</div>
                 <div className={styles.amount}>
                   ₹{project.totalBudget - project.remainingBudget}
                 </div>

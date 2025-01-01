@@ -18,7 +18,7 @@ export const addProject = async (projectData: ProjectFormData) => {
   try {
     const docRef = await addDoc(collection(db, 'projects'), {
       ...projectData,
-      spentAmount: 0,
+      remainingBudget: projectData.totalBudget,
       progress: 0,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),

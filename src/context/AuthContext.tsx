@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { findUserByEmailOrPhone } from '../utils/auth.utils';
 import {
-  Auth,
   signInWithEmailAndPassword,
   PhoneAuthProvider,
   signInWithCredential,

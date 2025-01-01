@@ -89,4 +89,13 @@ export const employeeFundService = {
       });
     });
   },
+  getEmployeeFundByProject: async (employeeId: string, projectId: string) => {
+    const fundQuery = query(
+      collection(db, 'employeeFunds'),
+      where('employeeId', '==', employeeId),
+      where('projectId', '==', projectId)
+    );
+    const snapshot = await getDocs(fundQuery);
+    return snapshot.docs[0]?.data() as EmployeeFund | undefined;
+  },
 };

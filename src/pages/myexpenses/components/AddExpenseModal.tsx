@@ -1,16 +1,15 @@
 // src/pages/MyExpenses/components/AddExpenseModal/AddExpenseModal.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './AddExpenseModal.module.css';
+import { Expense } from '../types';
+import Loader from '../../../components/Loader';
+import { getProjects } from '../../../services/project.service';
+import { EmployeeFund, Project } from '../../projects/types';
+import { employeeFundService } from '../../../services/employeeFund.service';
+import { useAuth } from '../../../context/AuthContext';
 
 interface AddExpenseModalProps {
-  onSubmit: (expense: {
-    projectId: string;
-    projectName: string;
-    amount: number;
-    date: string;
-    category: string;
-    description?: string;
-  }) => void;
+  onSubmit: (expense: Omit<Expense, 'id' | 'status' | 'userId'>) => void;
   onClose: () => void;
 }
 
@@ -25,15 +24,40 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     category: '',
     description: '',
   });
+  const [selectedProjectFund, setSelectedProjectFund] =
+    useState<EmployeeFund | null>(null);
+  const { user } = useAuth(); // Get current user
 
+  const handleProjectChange = async (projectId: string) => {
+    try {
+      const fund = await employeeFundService.getEmployeeFundByProject(
+        user?.id ?? '0',
+        projectId
+      );
+      setSelectedProjectFund(fund || null);
+      setFormData({ ...formData, projectId });
+    } catch (err) {
+      setError('Failed to fetch project fund');
+    }
+  };
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
-  // Mock project data - replace with actual data
-  const projects = [
-    { id: 'p1', name: 'Website Redesign' },
-    { id: 'p2', name: 'Mobile App' },
-  ];
-
+  const fetchProjects = async () => {
+    try {
+      const projectsData = await getProjects();
+      setProjects(projectsData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch projects');
+    } finally {
+      setLoading(false);
+    }
+  };
   const categories = [
     'Software',
     'Hardware',
@@ -44,12 +68,19 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
+    const amountNum = Number(formData.amount);
     if (!formData.projectId) {
       newErrors.project = 'Project is required';
     }
-    if (!formData.amount || Number(formData.amount) <= 0) {
+    if (!formData.amount || amountNum <= 0) {
       newErrors.amount = 'Valid amount is required';
+    }
+    if (amountNum > (selectedProjectFund?.remainingAmount ?? 0)) {
+      newErrors.amount = `Amount exceeds available balance ${
+        selectedProjectFund?.remainingAmount
+          ? `(₹${selectedProjectFund.remainingAmount})`
+          : ''
+      }`;
     }
     if (!formData.date) {
       newErrors.date = 'Date is required';
@@ -80,6 +111,8 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     }
   };
 
+  if (loading) return <Loader />;
+  if (error) return <div className={styles.error}>{error}</div>;
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
@@ -104,9 +137,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                 errors.project ? styles.error : ''
               }`}
               value={formData.projectId}
-              onChange={(e) =>
-                setFormData({ ...formData, projectId: e.target.value })
-              }
+              onChange={(e) => handleProjectChange(e.target.value)}
             >
               <option value="">Select Project</option>
               {projects.map((project) => (

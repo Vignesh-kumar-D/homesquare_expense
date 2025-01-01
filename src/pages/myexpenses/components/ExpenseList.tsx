@@ -25,7 +25,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses }) => {
               <div className={styles.cardHeader}>
                 <div className={styles.project}>{expense.projectName}</div>
                 <div className={styles.amount}>
-                  ₹{expense.amount.toLocaleString()}
+                  ₹{expense?.amount?.toLocaleString()}
                 </div>
               </div>
 
@@ -33,7 +33,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses }) => {
                 <div className={styles.metaRow}>
                   <span className={styles.label}>Date</span>
                   <span className={styles.value}>
-                    {new Date(expense.date).toLocaleDateString()}
+                    {new Date(expense?.date)?.toLocaleDateString()}
                   </span>
                 </div>
 

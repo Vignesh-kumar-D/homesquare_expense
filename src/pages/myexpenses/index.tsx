@@ -1,34 +1,54 @@
 // src/pages/MyExpenses/MyExpenses.tsx
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AddExpenseModal from './components/AddExpenseModal';
 import ExpenseList from './components/ExpenseList';
 import styles from './MyExpenses.module.css';
-import { Expense } from './types';
+import { Expense } from '../../services/expense.service';
+import { expenseService } from '../../services/expense.service';
+import Loader from '../../components/Loader';
+import { useAuth } from '../../context/AuthContext';
 
 const MyExpenses: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [expenses, setExpenses] = useState<Expense[]>([
-    {
-      id: '1',
-      projectId: 'p1',
-      projectName: 'Website Redesign',
-      amount: 5000,
-      date: '2024-01-15',
-      category: 'Software',
-      description: 'UI Component Library License',
-      status: 'approved',
-    },
-  ]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddExpense = (newExpense: Omit<Expense, 'id' | 'status'>) => {
-    const expense: Expense = {
-      ...newExpense,
-      id: Date.now().toString(),
-      status: 'pending',
-    };
-    setExpenses((prev) => [expense, ...prev]);
-    setIsModalOpen(false);
+  const { user } = useAuth();
+
+  const fetchExpenses = useCallback(async () => {
+    try {
+      const data = await expenseService.getExpenses(user?.id ?? '0');
+      setExpenses(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch expenses');
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]);
+  useEffect(() => {
+    fetchExpenses();
+  }, [fetchExpenses]);
+  const handleAddExpense = async (
+    newExpense: Omit<Expense, 'id' | 'status' | 'userId'>
+  ) => {
+    try {
+      setLoading(true);
+      await expenseService.addExpense({
+        ...newExpense,
+        userId: user?.id ?? '0',
+      });
+      await fetchExpenses();
+      setIsModalOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add expense');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) return <Loader fullScreen text="Adding expense..." />;
+  if (error) return <div className={styles.error}>{error}</div>;
 
   return (
     <div className={styles.container}>
