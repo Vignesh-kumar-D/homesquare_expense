@@ -41,7 +41,13 @@ const ProjectGrid: React.FC<ProjectGridProps> = ({
               <div className={styles.budgetInfo}>
                 <div className={styles.label}>Spent</div>
                 <div className={styles.amount}>
-                  ₹{project.spentAmount.toLocaleString()}
+                  ₹{project.totalBudget - project.remainingBudget}
+                </div>
+              </div>
+              <div className={styles.budgetInfo}>
+                <div className={styles.label}>Remaining</div>
+                <div className={styles.amount}>
+                  ₹{project?.remainingBudget?.toLocaleString()}
                 </div>
               </div>
             </div>

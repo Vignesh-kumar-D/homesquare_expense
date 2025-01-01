@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface Project {
   id: string;
   name: string;
@@ -6,7 +8,7 @@ export interface Project {
   startDate: string;
   endDate?: string;
   totalBudget: number;
-  spentAmount: number;
+  remainingBudget: number;
   status: 'active' | 'on-hold' | 'completed';
   progress: number;
 }
@@ -28,4 +30,14 @@ export interface FormErrors {
   endDate?: string;
   totalBudget?: string;
   status?: string;
+}
+
+export interface EmployeeFund {
+  id: string;
+  employeeId: string;
+  projectId: string;
+  allocatedAmount: number;
+  spentAmount: number;
+  remainingAmount: number;
+  lastUpdated: Timestamp;
 }

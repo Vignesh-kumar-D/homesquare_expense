@@ -96,6 +96,7 @@
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
+
 @media (max-width: 76rem) {
   .container {
     padding: var(--spacing-md);

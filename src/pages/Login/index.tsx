@@ -2,29 +2,133 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 import { useAuth } from '../../context/AuthContext';
+import {
+  signInWithEmailAndPassword,
+  PhoneAuthProvider,
+  RecaptchaVerifier,
+} from 'firebase/auth';
+import { auth, db } from '../../configs/firebase';
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
+declare global {
+  interface Window {
+    recaptchaVerifier: any;
+  }
+}
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { loginWithEmail, loginWithPhone } = useAuth();
   const [loginMethod, setLoginMethod] = useState<'mobile' | 'email'>('mobile');
   const [formData, setFormData] = useState({
     identifier: '', // mobile or email
-    password: '',
+    password: '', // password or OTP
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [verificationId, setVerificationId] = useState<string | null>(null);
+  const [showOTP, setShowOTP] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleEmailLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        formData.identifier,
+        formData.password
+      );
+
+      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+      const userData = userDoc.data();
+      if (userData) {
+        // Use loginWithEmail from context instead of login
+        await loginWithEmail(formData.identifier, formData.password);
+        navigate('/projects');
+      }
+    } catch (error: any) {
+      setErrors({ identifier: error.message });
+    }
+  };
+
+  const setupRecaptcha = () => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        'recaptcha-container',
+        {
+          size: 'invisible',
+        }
+      );
+    }
+  };
+  const handlePhoneLogin = async () => {
+    try {
+      if (!showOTP) {
+        // First step: Send OTP
+        setupRecaptcha();
+        const phoneNumber = formData.identifier.startsWith('+91')
+          ? formData.identifier
+          : `+91${formData.identifier}`;
+
+        const provider = new PhoneAuthProvider(auth);
+        const verificationId = await provider.verifyPhoneNumber(
+          phoneNumber,
+          window.recaptchaVerifier
+        );
+
+        setVerificationId(verificationId);
+        setShowOTP(true);
+        setFormData({ ...formData, password: '' }); // Clear password field for OTP
+      } else {
+        // Second step: Verify OTP
+        if (!verificationId) {
+          throw new Error('Verification ID not found');
+        }
+
+        // Use loginWithPhone from context
+        await loginWithPhone(formData.identifier);
+        navigate('/projects');
+      }
+    } catch (error: any) {
+      setErrors({ identifier: error.message });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add login logic here
-    login({
-      id: '1',
-      name: 'Aravind',
-      email: 'aravind@gmail.com',
-      mobile: '9876543212',
-      role: 'admin',
-    });
-    navigate('/projects');
+    setErrors({});
+
+    if (!formData.identifier) {
+      setErrors({ identifier: 'This field is required' });
+      return;
+    }
+
+    if (!showOTP && !formData.password && loginMethod === 'email') {
+      setErrors({ password: 'Password is required' });
+      return;
+    }
+
+    try {
+      if (loginMethod === 'email') {
+        await handleEmailLogin();
+      } else {
+        await handlePhoneLogin();
+      }
+    } catch (error: any) {
+      setErrors({ general: error.message });
+    }
+  };
+
+  const handleMethodChange = (method: 'mobile' | 'email') => {
+    setLoginMethod(method);
+    setFormData({ identifier: '', password: '' });
+    setErrors({});
+    setShowOTP(false);
+    setVerificationId(null);
   };
 
   return (
@@ -40,7 +144,7 @@ const Login: React.FC = () => {
             className={`${styles.methodButton} ${
               loginMethod === 'mobile' ? styles.active : ''
             }`}
-            onClick={() => setLoginMethod('mobile')}
+            onClick={() => handleMethodChange('mobile')}
           >
             Mobile
           </button>
@@ -48,7 +152,7 @@ const Login: React.FC = () => {
             className={`${styles.methodButton} ${
               loginMethod === 'email' ? styles.active : ''
             }`}
-            onClick={() => setLoginMethod('email')}
+            onClick={() => handleMethodChange('email')}
           >
             Email
           </button>
@@ -71,11 +175,9 @@ const Login: React.FC = () => {
               }
               value={formData.identifier}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  identifier: e.target.value,
-                })
+                setFormData({ ...formData, identifier: e.target.value })
               }
+              disabled={showOTP}
             />
             {errors.identifier && (
               <span className={styles.errorText}>{errors.identifier}</span>
@@ -83,31 +185,39 @@ const Login: React.FC = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Password</label>
+            <label className={styles.label}>
+              {loginMethod === 'mobile' && showOTP ? 'OTP' : 'Password'}
+            </label>
             <input
-              type="password"
+              // type={loginMethod === 'mobile' && showOTP ? 'text' : 'password'}
               className={`${styles.input} ${
                 errors.password ? styles.error : ''
               }`}
-              placeholder="Enter password"
+              placeholder={
+                loginMethod === 'mobile' && showOTP
+                  ? 'Enter OTP'
+                  : 'Enter password'
+              }
               value={formData.password}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  password: e.target.value,
-                })
+                setFormData({ ...formData, password: e.target.value })
               }
             />
             {errors.password && (
               <span className={styles.errorText}>{errors.password}</span>
             )}
-            <NavLink to="/forgot-password" className={styles.forgotPassword}>
-              Forgot Password?
-            </NavLink>
+            {loginMethod === 'email' && (
+              <NavLink to="/forgot-password" className={styles.forgotPassword}>
+                Forgot Password?
+              </NavLink>
+            )}
           </div>
 
+          {/* Hidden reCAPTCHA container */}
+          <div id="recaptcha-container"></div>
+
           <button type="submit" className={styles.submitButton}>
-            Log In
+            {loginMethod === 'mobile' && !showOTP ? 'Send OTP' : 'Log In'}
           </button>
         </form>
 

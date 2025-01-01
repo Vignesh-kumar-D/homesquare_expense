@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Projects from './pages/projects';
 import styles from './App.module.css';
@@ -12,7 +12,7 @@ import Login from './pages/Login';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Transactions from './pages/transactions';
 import MyExpenses from './pages/myexpenses';
-
+import Loader from './components/Loader';
 interface PrivateRouteProps {
   element: JSX.Element;
   allowedRoles?: Array<'admin' | 'accountant' | 'employee'>;
@@ -22,12 +22,20 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   element,
   allowedRoles = [],
 }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
+  // Handle loading state
+  if (loading) {
+    return <Loader />; // You might want to add a proper loading component
+  }
+
+  // If not authenticated, redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
+  // Check role authorization
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -36,27 +44,48 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
 };
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+
   return (
     <div className={styles.layout}>
-      <Header />
+      {!!user && <Header />}
       <main className={styles.main}>{children}</main>
     </div>
   );
+};
+
+// Public route component to prevent authenticated users from accessing login
+const PublicRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return element;
 };
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        {/* Public routes */}
+        <Route path="/login" element={<PublicRoute element={<Login />} />} />
+
+        {/* Private routes */}
         <Route
           path="/"
           element={
             <Layout>
-              <PrivateRoute element={<Projects />} />
+              <PrivateRoute element={<Dashboard />} />
             </Layout>
           }
         />
+
         <Route
           path="/projects"
           element={
@@ -65,6 +94,7 @@ const App: React.FC = () => {
             </Layout>
           }
         />
+
         <Route
           path="/projects/:projectId"
           element={
@@ -82,6 +112,7 @@ const App: React.FC = () => {
             </Layout>
           }
         />
+
         <Route
           path="/dashboard"
           element={
@@ -99,6 +130,7 @@ const App: React.FC = () => {
             </Layout>
           }
         />
+
         <Route
           path="/transactions"
           element={
@@ -120,6 +152,7 @@ const App: React.FC = () => {
           }
         />
 
+        {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>

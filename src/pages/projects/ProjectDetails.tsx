@@ -1,63 +1,99 @@
-// src/pages/Projects/components/ProjectDetails/ProjectDetails.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from './ProjectDetails.module.css';
-import { useNavigate } from 'react-router-dom';
-interface Allocation {
-  id: string;
-  employeeId: string;
-  amount: number;
-  date: string;
-  description: string;
-}
-
-const mockProject = {
-  id: '1',
-  name: 'Website Redesign',
-  clientName: 'Microsoft',
-  description: 'Complete website overhaul',
-  startDate: '2024-01-01',
-  endDate: '2024-06-30',
-  totalBudget: 100000,
-  spentAmount: 25000,
-  status: 'active' as const,
-  progress: 25,
-};
-
-const mockEmployees = [
-  { id: '1', name: 'John Doe' },
-  { id: '2', name: 'Jane Smith' },
-  { id: '3', name: 'Mike Johnson' },
-];
+import { EmployeeFund, Project } from './types';
+import { User } from '../../configs/firebase.types';
+import { employeeFundService } from '../../services/employeeFund.service';
+import { getProjectById } from '../../services/project.service';
+import Loader from '../../components/Loader';
 const ProjectDetails: React.FC = () => {
-  // const { projectId } = useParams(); // id to be used in real app
+  const { projectId } = useParams();
   const navigate = useNavigate();
-  // In real app, fetch project using projectId
-  const project = mockProject;
 
-  const [allocations, setAllocations] = useState<Allocation[]>([]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [employees, setEmployees] = useState<User[]>([]);
+  const [employeeFunds, setEmployeeFunds] = useState<EmployeeFund[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
+  const [allocationError, setAllocationError] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!projectId) return;
 
-  const handleAllocate = () => {
-    if (!selectedEmployee || !amount || Number(amount) <= 0) return;
+        // Fetch all required data
+        const [projectData, employeesData, fundsData] = await Promise.all([
+          getProjectById(projectId),
+          employeeFundService.getAllEmployees(),
+          employeeFundService.getProjectFunds(projectId),
+        ]);
 
-    const newAllocation: Allocation = {
-      id: Date.now().toString(),
-      employeeId: selectedEmployee,
-      amount: Number(amount),
-      date: new Date().toISOString(),
-      description,
+        setProject(projectData);
+        setEmployees(employeesData);
+        setEmployeeFunds(fundsData);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setLoading(false);
+      }
     };
 
-    setAllocations([...allocations, newAllocation]);
-    setSelectedEmployee('');
-    setAmount('');
-    setDescription('');
+    fetchData();
+  }, [projectId]);
+
+  const handleAllocate = async () => {
+    if (!selectedEmployee || !amount || Number(amount) <= 0 || !projectId)
+      return;
+
+    const amountNum = Number(amount);
+
+    // Clear any previous errors
+    setAllocationError(null);
+
+    // Check if amount exceeds remaining budget
+    if (amountNum > (project?.remainingBudget ?? 0)) {
+      setAllocationError(
+        `Cannot allocate ₹${amountNum.toLocaleString()}. Maximum available amount is ₹${project?.remainingBudget.toLocaleString()}`
+      );
+      return;
+    }
+
+    try {
+      await employeeFundService.allocateFunds(
+        projectId,
+        selectedEmployee,
+        amountNum
+      );
+
+      // Reset form
+      setSelectedEmployee('');
+      setAmount('');
+      setDescription('');
+      setAllocationError(null); // Clear error on success
+
+      // Refresh data
+      const [updatedProject, updatedFunds] = await Promise.all([
+        getProjectById(projectId),
+        employeeFundService.getProjectFunds(projectId),
+      ]);
+
+      setProject(updatedProject);
+      setEmployeeFunds(updatedFunds);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to allocate funds');
+    }
   };
 
+  if (loading) return <Loader />;
+  if (error) return <div>Error: {error}</div>;
+  if (!project) return <div>Project not found</div>;
   return (
     <div className={styles.container}>
+      {/* Rest of your JSX remains similar, but using real data */}
       <button
         onClick={() => navigate('/projects')}
         className={styles.backButton}
@@ -73,12 +109,31 @@ const ProjectDetails: React.FC = () => {
             {project.status}
           </span>
         </div>
+        <div className={styles.budgetInfo}>
+          <div>Total Budget: ₹{project?.totalBudget?.toLocaleString()}</div>
+          <div>
+            Allocated: ₹
+            {(
+              Number(project?.totalBudget) - Number(project?.remainingBudget)
+            )?.toLocaleString()}
+          </div>
+          <div>Remaining: ₹{project?.remainingBudget?.toLocaleString()}</div>
+        </div>
       </div>
-
+      {allocationError && (
+        <div className={styles.errorAlert}>
+          <div className={styles.errorContent}>
+            <span className={styles.errorIcon}>⚠️</span>
+            {allocationError}
+          </div>
+        </div>
+      )}
+      {/* Allocation form */}
       <div className={styles.content}>
         <div className={styles.allocationForm}>
           <h2 className={styles.sectionTitle}>New Allocation</h2>
           <div className={styles.formGrid}>
+            {/* Employee select */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="employee">
                 Employee
@@ -90,7 +145,7 @@ const ProjectDetails: React.FC = () => {
                 onChange={(e) => setSelectedEmployee(e.target.value)}
               >
                 <option value="">Select Employee</option>
-                {mockEmployees.map((emp) => (
+                {employees.map((emp) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.name}
                   </option>
@@ -98,6 +153,7 @@ const ProjectDetails: React.FC = () => {
               </select>
             </div>
 
+            {/* Amount input */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="amount">
                 Amount
@@ -109,9 +165,11 @@ const ProjectDetails: React.FC = () => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="Enter amount"
+                max={project.remainingBudget}
               />
             </div>
 
+            {/* Description input */}
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="description">
                 Description
@@ -129,39 +187,39 @@ const ProjectDetails: React.FC = () => {
             <button
               className={styles.allocateButton}
               onClick={handleAllocate}
-              disabled={!selectedEmployee || !amount}
+              disabled={!selectedEmployee || !amount || Number(amount) <= 0}
             >
               Allocate Funds
             </button>
           </div>
         </div>
 
+        {/* Employee Funds List */}
         <div className={styles.allocations}>
-          <h2 className={styles.sectionTitle}>Allocations</h2>
-          {allocations.length === 0 ? (
+          <h2 className={styles.sectionTitle}>Employee Funds</h2>
+          {employeeFunds.length === 0 ? (
             <div className={styles.emptyState}>No allocations yet</div>
           ) : (
             <div className={styles.allocationList}>
-              {allocations.map((allocation) => (
-                <div key={allocation.id} className={styles.allocationCard}>
+              {employeeFunds.map((fund) => (
+                <div key={fund.id} className={styles.allocationCard}>
                   <div className={styles.allocationHeader}>
                     <span className={styles.employeeName}>
                       {
-                        mockEmployees.find(
-                          (emp) => emp.id === allocation.employeeId
-                        )?.name
+                        employees.find((emp) => emp.id === fund.employeeId)
+                          ?.name
                       }
                     </span>
                     <span className={styles.amount}>
-                      ₹{allocation.amount.toLocaleString()}
+                      ₹{fund?.allocatedAmount?.toLocaleString()}
                     </span>
                   </div>
                   <div className={styles.allocationMeta}>
-                    <span className={styles.date}>
-                      {new Date(allocation.date).toLocaleDateString()}
+                    <span className={styles.remainingAmount}>
+                      Remaining: ₹{fund?.remainingAmount?.toLocaleString()}
                     </span>
-                    <span className={styles.description}>
-                      {allocation.description}
+                    <span className={styles.spentAmount}>
+                      Spent: ₹{fund?.spentAmount?.toLocaleString()}
                     </span>
                   </div>
                 </div>

@@ -1,0 +1,61 @@
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.spinner {
+  border-radius: 50%;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #2563eb; /* primary color */
+  animation: spin 1s linear infinite;
+}
+
+.small {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.medium {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.large {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+.text {
+  color: #4b5563;
+  margin: 0;
+  font-size: 14px;
+}
+
+.fullScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

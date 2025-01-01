@@ -1,82 +1,87 @@
 // src/pages/Projects/Projects.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddProject from './components/AddProject';
 import ProjectGrid from './components/ProjectGrid';
 import styles from './Projects.module.css';
-import { ProjectFormData } from './types';
-
-export interface Project {
-  id: string;
-  name: string;
-  clientName: string;
-  description: string;
-  startDate: string;
-  endDate?: string;
-  totalBudget: number;
-  spentAmount: number;
-  status: 'active' | 'on-hold' | 'completed';
-  progress: number;
-}
+import { Project, ProjectFormData } from './types';
+import {
+  addProject,
+  updateProject,
+  getProjects,
+} from '../../services/project.service';
+import Loader from '../../components/Loader';
 
 const Projects: React.FC = () => {
   const navigate = useNavigate();
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: '1',
-      name: 'Website Redesign',
-      clientName: 'Microsoft',
-      description: 'Complete website overhaul',
-      startDate: '2024-01-01',
-      endDate: '2024-06-30',
-      totalBudget: 100000,
-      spentAmount: 25000,
-      status: 'active',
-      progress: 25,
-    },
-    {
-      id: '2',
-      name: 'Mobile App Development',
-      clientName: 'Google',
-      description: 'New mobile application',
-      startDate: '2024-02-15',
-      totalBudget: 150000,
-      spentAmount: 50000,
-      status: 'active',
-      progress: 33,
-    },
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddProject = (projectData: ProjectFormData) => {
-    if (editingProject) {
-      // Handle Edit
-      setProjects(
-        projects.map((project) =>
-          project.id === editingProject.id
-            ? { ...project, ...projectData }
-            : project
-        )
-      );
-      setEditingProject(null);
-    } else {
-      // Handle Add
-      const newProject: Project = {
-        id: Date.now().toString(),
-        ...projectData,
-        spentAmount: 0,
-        progress: 0,
-      };
-      setProjects([...projects, newProject]);
+  // Fetch projects on component mount
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      setLoading(true);
+      const fetchedProjects = await getProjects();
+      setProjects(fetchedProjects);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load projects');
+      console.error('Error fetching projects:', err);
+    } finally {
+      setLoading(false);
     }
-    setIsAddingProject(false);
+  };
+
+  const handleAddProject = async (projectData: ProjectFormData) => {
+    try {
+      if (editingProject) {
+        // Handle Edit
+        await updateProject(editingProject.id, projectData);
+        setProjects(
+          projects.map((project) =>
+            project.id === editingProject.id
+              ? { ...project, ...projectData }
+              : project
+          )
+        );
+        setEditingProject(null);
+      } else {
+        // Handle Add
+        const newProjectId = await addProject(projectData);
+        const newProject: Project = {
+          id: newProjectId,
+          ...projectData,
+          remainingBudget: projectData.totalBudget,
+          progress: 0,
+        };
+        setProjects([newProject, ...projects]);
+      }
+      setIsAddingProject(false);
+    } catch (err) {
+      console.error('Error saving project:', err);
+      // You might want to show an error message to the user here
+    }
   };
 
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
     setIsAddingProject(true);
   };
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   return (
     <div className={styles.container}>
