@@ -173,7 +173,6 @@ const buildExpenseFilters = (
   filters: Filters
 ): QueryFieldFilterConstraint[] => {
   const queryFilters: QueryFieldFilterConstraint[] = [];
-  console.log(filters, 'ffiltersss');
 
   // Date filtering for expenses
   if (filters.dateRange.startDate) {
@@ -195,7 +194,7 @@ const buildExpenseFilters = (
   }
 
   // Category filtering
-  if (filters.category && filters.category !== 'ALL') {
+  if (filters.category && filters.category !== 'All') {
     queryFilters.push(where('category', '==', filters.category));
   }
 
@@ -237,7 +236,7 @@ const buildAllocationFilters = (
   if (filters.project) {
     queryFilters.push(where('projectId', '==', filters.project));
   }
-  if (filters.category && filters.category !== 'ALL') {
+  if (filters.category && filters.category !== 'All') {
     queryFilters.push(where('category', '==', filters.category));
   }
   return queryFilters;
