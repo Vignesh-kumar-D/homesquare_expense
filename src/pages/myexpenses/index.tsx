@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AddExpenseModal from './components/AddExpenseModal';
 import ExpenseList from './components/ExpenseList';
 import styles from './MyExpenses.module.css';
-import { Expense } from '../../services/expense.service';
+import { Expense } from './types';
 import { expenseService } from '../../services/expense.service';
 import Loader from '../../components/Loader';
 import { useAuth } from '../../context/AuthContext';

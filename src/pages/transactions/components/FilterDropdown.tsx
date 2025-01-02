@@ -1,5 +1,6 @@
-// src/pages/Transactions/components/FilterDropdown/FilterDropdown.tsx
+// src/components/FilterDropdown/FilterDropdown.tsx
 import React, { useState, useRef, useEffect } from 'react';
+import Loader from '../../../components/Loader';
 import styles from './FilterDropdown.module.css';
 
 interface Option {
@@ -12,6 +13,7 @@ interface FilterDropdownProps {
   options: Option[];
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -19,12 +21,12 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   options,
   value,
   onChange,
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -39,7 +41,6 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter options based on search term
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -50,34 +51,39 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     <div className={styles.container} ref={dropdownRef}>
       <label className={styles.label}>{label}</label>
 
-      <div className={styles.dropdown}>
+      <div className={`${styles.dropdown} ${disabled ? styles.disabled : ''}`}>
         <button
           type="button"
           className={styles.trigger}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          disabled={disabled}
         >
           <span className={styles.selectedText}>
             {selectedOption?.label || 'Select...'}
           </span>
-          <svg
-            className={`${styles.arrow} ${isOpen ? styles.open : ''}`}
-            width="10"
-            height="6"
-            viewBox="0 0 10 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 1L5 5L9 1"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          {disabled ? (
+            <Loader size="small" />
+          ) : (
+            <svg
+              className={`${styles.arrow} ${isOpen ? styles.open : ''}`}
+              width="10"
+              height="6"
+              viewBox="0 0 10 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L5 5L9 1"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
         </button>
 
-        {isOpen && (
+        {isOpen && !disabled && (
           <div className={styles.menu}>
             <div className={styles.searchContainer}>
               <input

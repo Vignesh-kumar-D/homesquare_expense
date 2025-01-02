@@ -1,10 +1,12 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "id": "expense_app",
+  "short_name": "Expenses",
+  "name": "Home Square interiors Budget app",
+  "description": "An to allocate money to employees and track spending",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "64x64",
       "type": "image/x-icon"
     },
     {
@@ -21,5 +23,22 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "screenshots": [
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "label": "Tablet Portrait View",
+      "platform": "narrow"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "label": "Desktop View",
+      "form_factor": "wide",
+      "platform": "wide"
+    }
+  ]
 }

@@ -11,18 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../configs/firebase';
 import { EmployeeFund } from '../pages/projects/types';
-
-export interface Expense {
-  id: string;
-  projectId: string;
-  projectName: string;
-  amount: number;
-  date: string;
-  category: string;
-  userId: string;
-  description?: string;
-  status: 'pending' | 'approved' | 'rejected';
-}
+import { Expense } from '../pages/myexpenses/types';
 
 export const expenseService = {
   addExpense: async (expense: Omit<Expense, 'id' | 'status'>) => {

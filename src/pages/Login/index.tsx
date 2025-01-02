@@ -9,14 +9,7 @@ import {
 } from 'firebase/auth';
 import { auth, db } from '../../configs/firebase';
 import { NavLink, useNavigate } from 'react-router-dom';
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-} from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 declare global {
   interface Window {
     recaptchaVerifier: any;

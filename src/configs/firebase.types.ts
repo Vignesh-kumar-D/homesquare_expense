@@ -10,19 +10,6 @@ export interface User {
   position: string;
 }
 
-export interface Expense {
-  id: string;
-  userId: string;
-  amount: number;
-  description: string;
-  category: string;
-  status: 'pending' | 'approved' | 'rejected';
-  submittedAt: Timestamp;
-  receiptUrls: string[];
-  approvedBy?: string;
-  approvedAt?: Timestamp;
-}
-
 export interface Budget {
   id: string;
   departmentId: string;

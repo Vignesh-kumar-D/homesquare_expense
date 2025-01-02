@@ -1,24 +1,15 @@
-// src/pages/Transactions/Transactions.tsx
+// src/pages/transactions/Transactions.tsx
 import React, { useState } from 'react';
 import DateRangePicker from './components/DateRangePicker';
 import FilterDropdown from './components/FilterDropdown';
 import TransactionGrid from './components/TransactionGrid';
+import { useFilterOptions } from '../../hooks/useFilterOptions';
+import { Filters } from './types';
 import styles from './Transactions.module.css';
 
-interface DateRange {
-  startDate: string;
-  endDate: string;
-}
-
-interface Filters {
-  dateRange: DateRange;
-  employee: string;
-  project: string;
-  category: string;
-  type: 'ALL' | 'CREDIT' | 'DEBIT';
-}
-
 const Transactions: React.FC = () => {
+  const { options, loading: optionsLoading } = useFilterOptions();
+
   const [filters, setFilters] = useState<Filters>({
     dateRange: { startDate: '', endDate: '' },
     employee: '',
@@ -54,36 +45,25 @@ const Transactions: React.FC = () => {
           />
           <FilterDropdown
             label="Employee"
-            options={[
-              { value: '', label: 'All Employees' },
-              { value: 'emp1', label: 'John Doe' },
-              { value: 'emp2', label: 'Jane Smith' },
-            ]}
+            options={options.employees}
             value={filters.employee}
             onChange={(value) =>
               setFilters((prev) => ({ ...prev, employee: value }))
             }
+            disabled={optionsLoading}
           />
           <FilterDropdown
             label="Project"
-            options={[
-              { value: '', label: 'All Projects' },
-              { value: '1', label: 'Website Redesign' },
-              { value: '2', label: 'Mobile App' },
-            ]}
+            options={options.projects}
             value={filters.project}
             onChange={(value) =>
               setFilters((prev) => ({ ...prev, project: value }))
             }
+            disabled={optionsLoading}
           />
           <FilterDropdown
             label="Category"
-            options={[
-              { value: '', label: 'All Categories' },
-              { value: 'software', label: 'Software' },
-              { value: 'hardware', label: 'Hardware' },
-              { value: 'services', label: 'Services' },
-            ]}
+            options={options.categories}
             value={filters.category}
             onChange={(value) =>
               setFilters((prev) => ({ ...prev, category: value }))
@@ -102,19 +82,21 @@ const Transactions: React.FC = () => {
           </button>
           <button
             className={`${styles.typeButton} ${
-              filters.type === 'CREDIT' ? styles.active : ''
+              filters.type === 'ALLOCATED' ? styles.active : ''
             }`}
-            onClick={() => setFilters((prev) => ({ ...prev, type: 'CREDIT' }))}
+            onClick={() =>
+              setFilters((prev) => ({ ...prev, type: 'ALLOCATED' }))
+            }
           >
-            Credits
+            Allocated
           </button>
           <button
             className={`${styles.typeButton} ${
-              filters.type === 'DEBIT' ? styles.active : ''
+              filters.type === 'SPENT' ? styles.active : ''
             }`}
-            onClick={() => setFilters((prev) => ({ ...prev, type: 'DEBIT' }))}
+            onClick={() => setFilters((prev) => ({ ...prev, type: 'SPENT' }))}
           >
-            Debits
+            Spent
           </button>
         </div>
       </div>

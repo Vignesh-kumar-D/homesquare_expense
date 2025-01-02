@@ -5,6 +5,7 @@ export interface Expense {
   amount: number;
   date: string;
   category: string;
+  userId: string;
   description?: string;
   status: 'pending' | 'approved' | 'rejected';
 }
