@@ -1,23 +1,28 @@
+export interface ProjectAllocation {
+  projectId: string;
+  projectName: string;
+  allocated: number;
+  spent: number;
+  lastTransaction: string;
+}
+
+export interface Transaction {
+  id: string;
+  projectId: string;
+  projectName: string;
+  amount: number;
+  date: string;
+  description: string;
+  type: 'ALLOCATED' | 'SPENT';
+}
+
 export interface EmployeeFinancial {
   id: string;
   name: string;
-  role: 'admin' | 'accountant' | 'employee';
+  role: string;
   totalAllocated: number;
   totalSpent: number;
   spendingPercentage: number;
-  projectAllocations: {
-    projectId: string;
-    projectName: string;
-    allocated: number;
-    spent: number;
-    lastTransaction?: string; // date
-  }[];
-  recentTransactions: {
-    id: string;
-    projectId: string;
-    projectName: string;
-    amount: number;
-    date: string;
-    description: string;
-  }[];
+  projectAllocations: ProjectAllocation[];
+  recentTransactions: Transaction[];
 }

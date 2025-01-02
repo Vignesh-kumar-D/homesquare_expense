@@ -1,49 +1,11 @@
-// src/pages/Employees/Employees.tsx
 import React, { useState } from 'react';
+import { useEmployeeData } from '../../hooks/useEmployeeData';
+import Alert from '../../components/Alert';
 import styles from './Employees.module.css';
-import { EmployeeFinancial } from './types';
 
 const Employees: React.FC = () => {
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null);
-
-  const mockEmployees: EmployeeFinancial[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      role: 'employee',
-      totalAllocated: 100000,
-      totalSpent: 45000,
-      spendingPercentage: 45,
-      projectAllocations: [
-        {
-          projectId: '1',
-          projectName: 'Website Redesign',
-          allocated: 60000,
-          spent: 25000,
-          lastTransaction: '2024-01-15',
-        },
-        {
-          projectId: '2',
-          projectName: 'Mobile App',
-          allocated: 40000,
-          spent: 20000,
-          lastTransaction: '2024-01-20',
-        },
-      ],
-      recentTransactions: [
-        {
-          id: 't1',
-          projectId: '1',
-          projectName: 'Website Redesign',
-          amount: 5000,
-          date: '2024-01-15',
-          description: 'UI Components',
-        },
-        // ... more transactions
-      ],
-    },
-    // ... more employees
-  ];
+  const { employees, loading, error } = useEmployeeData();
 
   const getStatusColor = (percentage: number) => {
     if (percentage < 50) return 'var(--color-success)';
@@ -52,18 +14,31 @@ const Employees: React.FC = () => {
     return 'var(--color-error)';
   };
 
+  if (loading) {
+    return <div className={styles.loading}>Loading employee data...</div>;
+  }
+
+  if (error) {
+    return <Alert type="error" message={error} />;
+  }
+
+  if (!employees.length) {
+    return <Alert type="info" message="No employee data found" />;
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Employee Allocations</h1>
 
       <div className={styles.employeeList}>
-        {mockEmployees.map((employee) => (
+        {employees.map((employee) => (
           <div
             key={employee.id}
             className={`${styles.employeeCard} ${
               expandedEmployee === employee.id ? styles.expanded : ''
             }`}
           >
+            {/* Card Header */}
             <div
               className={styles.cardHeader}
               onClick={() =>
@@ -111,6 +86,7 @@ const Employees: React.FC = () => {
               </div>
             </div>
 
+            {/* Expanded Content */}
             {expandedEmployee === employee.id && (
               <div className={styles.cardContent}>
                 <div className={styles.projectAllocations}>
@@ -153,8 +129,15 @@ const Employees: React.FC = () => {
                         <span className={styles.transactionDate}>
                           {transaction.date}
                         </span>
-                        <span className={styles.transactionAmount}>
-                          ₹{transaction.amount.toLocaleString()}
+                        <span
+                          className={`${styles.transactionAmount} ${
+                            transaction.type === 'ALLOCATED'
+                              ? styles.allocated
+                              : styles.spent
+                          }`}
+                        >
+                          {transaction.type === 'ALLOCATED' ? '+' : '-'}₹
+                          {transaction.amount.toLocaleString()}
                         </span>
                       </div>
                     </div>
