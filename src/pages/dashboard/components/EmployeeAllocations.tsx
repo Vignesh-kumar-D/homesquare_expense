@@ -1,24 +1,18 @@
 // src/pages/Dashboard/components/EmployeeAllocations/EmployeeAllocations.tsx
 import React from 'react';
 import styles from './EmployeeAllocations.module.css';
+import { EmployeeAllocationData } from '../types';
 
-const mockEmployees = [
-  {
-    id: '1',
-    name: 'John Doe',
-    allocated: 50000,
-    spent: 35000,
-    projectCount: 3,
-  },
-  // Add more mock employees
-];
+type Props = {
+  data: EmployeeAllocationData[];
+};
 
-const EmployeeAllocations: React.FC = () => {
+const EmployeeAllocations: React.FC<Props> = ({ data }) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Employee Allocations</h2>
       <div className={styles.employeeList}>
-        {mockEmployees.map((employee) => (
+        {data.map((employee) => (
           <div key={employee.id} className={styles.employeeItem}>
             <div className={styles.employeeInfo}>
               <h3 className={styles.employeeName}>{employee.name}</h3>

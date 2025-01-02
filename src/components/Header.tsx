@@ -1,4 +1,3 @@
-// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';

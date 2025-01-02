@@ -1,4 +1,3 @@
-// src/components/Alert/Alert.tsx
 import React from 'react';
 import styles from './Alert.module.css';
 

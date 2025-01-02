@@ -27,7 +27,6 @@ const transformExpenses = async (expensesSnapshot: QuerySnapshot) => {
   for (const doc of expensesSnapshot.docs) {
     const expense = doc.data() as Expense;
 
-    // Get employee name from the User collection
     const employeeDoc = await getDoc(fireStoreDoc(db, 'users', expense.userId));
     const employee = employeeDoc.data() as User;
 
@@ -55,7 +54,6 @@ const transformAllocations = async (allocationsSnapshot: QuerySnapshot) => {
   for (const doc of allocationsSnapshot.docs) {
     const allocation = doc.data() as EmployeeFund;
 
-    // Get related data from Project and User collections
     const [projectDoc, employeeDoc] = await Promise.all([
       getDoc(fireStoreDoc(db, 'projects', allocation.projectId)),
       getDoc(fireStoreDoc(db, 'users', allocation.employeeId)),

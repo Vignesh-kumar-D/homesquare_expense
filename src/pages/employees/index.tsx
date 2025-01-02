@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useEmployeeData } from '../../hooks/useEmployeeData';
 import Alert from '../../components/Alert';
 import styles from './Employees.module.css';
+import Loader from '../../components/Loader';
 
 const Employees: React.FC = () => {
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null);
@@ -15,7 +16,7 @@ const Employees: React.FC = () => {
   };
 
   if (loading) {
-    return <div className={styles.loading}>Loading employee data...</div>;
+    return <Loader />;
   }
 
   if (error) {

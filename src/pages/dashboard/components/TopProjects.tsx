@@ -1,31 +1,17 @@
-// src/pages/Dashboard/components/TopProjects/TopProjects.tsx
 import React from 'react';
 import styles from './TopProjects.module.css';
+import { TopProjectData } from '../types';
 
-const mockProjects = [
-  {
-    id: '1',
-    name: 'Website Redesign',
-    budget: 100000,
-    spent: 75000,
-    progress: 75,
-  },
-  {
-    id: '2',
-    name: 'Mobile App Development',
-    budget: 150000,
-    spent: 100000,
-    progress: 66,
-  },
-  // Add more mock projects
-];
+type Props = {
+  topProjects: TopProjectData[];
+};
 
-const TopProjects: React.FC = () => {
+const TopProjects: React.FC<Props> = ({ topProjects }) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Top Projects by Spending</h2>
       <div className={styles.projectList}>
-        {mockProjects.map((project) => (
+        {topProjects.map((project) => (
           <div key={project.id} className={styles.projectItem}>
             <div className={styles.projectInfo}>
               <h3 className={styles.projectName}>{project.name}</h3>

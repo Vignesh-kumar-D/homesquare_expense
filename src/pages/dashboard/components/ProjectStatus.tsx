@@ -8,12 +8,11 @@ import {
   Tooltip,
 } from 'recharts';
 import styles from './ProjectStatus.module.css';
+import { ProjectStatusData } from '../types';
 
-const data = [
-  { name: 'Active', value: 8 },
-  { name: 'On Hold', value: 3 },
-  { name: 'Completed', value: 5 },
-];
+type Props = {
+  data: ProjectStatusData[];
+};
 
 const COLORS = [
   'var(--color-success)',
@@ -21,7 +20,7 @@ const COLORS = [
   'var(--color-primary)',
 ];
 
-const ProjectStatus: React.FC = () => {
+const ProjectStatus: React.FC<Props> = ({ data }) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Project Status Distribution</h2>

@@ -1,6 +1,5 @@
-// src/App.tsx
 import React from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Projects from './pages/projects';
 import styles from './App.module.css';
@@ -23,14 +22,11 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   allowedRoles = [],
 }) => {
   const { user, loading } = useAuth();
-  const navigate = useNavigate();
 
-  // Handle loading state
   if (loading) {
-    return <Loader />; // You might want to add a proper loading component
+    return <Loader />;
   }
 
-  // If not authenticated, redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
   }

@@ -1,6 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
 
-// src/types/firebase.ts
 export interface User {
   id: string;
   name: string;

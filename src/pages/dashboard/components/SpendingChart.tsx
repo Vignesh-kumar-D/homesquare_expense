@@ -1,4 +1,3 @@
-// src/pages/Dashboard/components/SpendingChart/SpendingChart.tsx
 import React from 'react';
 import {
   LineChart,
@@ -11,17 +10,13 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import styles from './SpendingChart.module.css';
+import { SpendingTrendData } from '../types';
 
-const data = [
-  { month: 'Jan', budget: 150000, spent: 120000 },
-  { month: 'Feb', budget: 160000, spent: 130000 },
-  { month: 'Mar', budget: 155000, spent: 140000 },
-  { month: 'Apr', budget: 175000, spent: 135000 },
-  { month: 'May', budget: 165000, spent: 125000 },
-  { month: 'Jun', budget: 180000, spent: 140000 },
-];
+type Props = {
+  data: SpendingTrendData[];
+};
 
-const SpendingChart: React.FC = () => {
+const SpendingChart: React.FC<Props> = ({ data }) => {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Monthly Spending Overview</h2>
