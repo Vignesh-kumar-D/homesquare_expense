@@ -7,6 +7,7 @@ import {
   doc as fireStoreDoc,
   QuerySnapshot,
   getDoc,
+  QueryFieldFilterConstraint,
 } from 'firebase/firestore';
 import { db } from '../configs/firebase';
 import { Filters, Transaction } from '../pages/transactions/types';
@@ -14,6 +15,11 @@ import { useEffect, useState } from 'react';
 import { EmployeeFund, Project } from '../pages/projects/types';
 import { Expense } from '../pages/myexpenses/types';
 import { User } from '../configs/firebase.types';
+
+interface FilterResult {
+  filters: QueryFieldFilterConstraint[];
+  skipQuery: boolean;
+}
 
 const transformExpenses = async (expensesSnapshot: QuerySnapshot) => {
   const transactions: Transaction[] = [];
@@ -74,6 +80,7 @@ const transformAllocations = async (allocationsSnapshot: QuerySnapshot) => {
   }
   return transactions;
 };
+
 export const useTransactions = (filters: Filters, searchTerm: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,33 +90,46 @@ export const useTransactions = (filters: Filters, searchTerm: string) => {
       setLoading(true);
       setError(null);
       try {
-        // Fetch expenses (ALLOCATED transactions)
-        const expensesQuery = query(
-          collection(db, 'expenses'),
-          ...buildExpenseFilters(filters)
-        );
+        const expenseFilters = buildExpenseFilters(filters);
+        const allocationFilters = buildAllocationFilters(filters);
 
-        // Fetch allocations (SPENT transactions)
-        const allocationsQuery = query(
-          collection(db, 'employeeFunds'),
-          ...buildAllocationFilters(filters)
-        );
+        let expenseTransactions: Transaction[] = [];
+        let allocationTransactions: Transaction[] = [];
 
+        // Always fetch both and filter afterwards
         const [expensesSnapshot, allocationsSnapshot] = await Promise.all([
-          getDocs(expensesQuery),
-          getDocs(allocationsQuery),
+          getDocs(query(collection(db, 'expenses'), ...expenseFilters)),
+          getDocs(query(collection(db, 'employeeFunds'), ...allocationFilters)),
         ]);
 
-        const expenseTransactions = await transformExpenses(expensesSnapshot);
-        const allocationTransactions = await transformAllocations(
-          allocationsSnapshot
+        // Transform the data
+        const [transformedExpenses, transformedAllocations] = await Promise.all(
+          [
+            transformExpenses(expensesSnapshot),
+            transformAllocations(allocationsSnapshot),
+          ]
         );
+        // Apply type and category filters after fetching
+        if (filters.type === 'ALL') {
+          expenseTransactions = transformedExpenses;
+          allocationTransactions =
+            filters.category === 'Fund Allocation'
+              ? transformedAllocations
+              : transformedAllocations.filter(
+                  () => filters.category !== 'Fund Allocation'
+                );
+        } else if (filters.type === 'SPENT') {
+          expenseTransactions = transformedExpenses;
+        } else if (filters.type === 'ALLOCATED') {
+          allocationTransactions = transformedAllocations;
+        }
 
         let combinedTransactions = [
           ...expenseTransactions,
           ...allocationTransactions,
         ];
 
+        // Apply search filter
         if (searchTerm) {
           combinedTransactions = combinedTransactions.filter(
             (transaction) =>
@@ -125,6 +145,7 @@ export const useTransactions = (filters: Filters, searchTerm: string) => {
           );
         }
 
+        // Sort by date
         combinedTransactions.sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
@@ -148,37 +169,57 @@ export const useTransactions = (filters: Filters, searchTerm: string) => {
   return { transactions, loading, error };
 };
 
-const buildExpenseFilters = (filters: Filters) => {
-  const queryFilters = [];
+const buildExpenseFilters = (
+  filters: Filters
+): QueryFieldFilterConstraint[] => {
+  const queryFilters: QueryFieldFilterConstraint[] = [];
+  console.log(filters, 'ffiltersss');
 
-  if (filters.dateRange.startDate && filters.dateRange.endDate) {
-    queryFilters.push(
-      where('date', '>=', filters.dateRange.startDate),
-      where('date', '<=', filters.dateRange.endDate)
-    );
+  // Date filtering for expenses
+  if (filters.dateRange.startDate) {
+    queryFilters.push(where('date', '>=', filters.dateRange.startDate));
   }
 
+  if (filters.dateRange.endDate) {
+    queryFilters.push(where('date', '<=', filters.dateRange.endDate));
+  }
+
+  // User/Employee filtering
+  if (filters.employee) {
+    queryFilters.push(where('userId', '==', filters.employee));
+  }
+
+  // Project filtering
   if (filters.project) {
     queryFilters.push(where('projectId', '==', filters.project));
   }
 
-  if (filters.category) {
+  // Category filtering
+  if (filters.category && filters.category !== 'ALL') {
     queryFilters.push(where('category', '==', filters.category));
   }
 
   return queryFilters;
 };
 
-const buildAllocationFilters = (filters: Filters) => {
-  const queryFilters = [];
+const buildAllocationFilters = (
+  filters: Filters
+): QueryFieldFilterConstraint[] => {
+  const queryFilters: QueryFieldFilterConstraint[] = [];
 
-  if (filters.dateRange.startDate && filters.dateRange.endDate) {
+  // Date filtering for allocations
+  if (filters.dateRange.startDate) {
     queryFilters.push(
       where(
         'lastUpdated',
         '>=',
         Timestamp.fromDate(new Date(filters.dateRange.startDate))
-      ),
+      )
+    );
+  }
+
+  if (filters.dateRange.endDate) {
+    queryFilters.push(
       where(
         'lastUpdated',
         '<=',
@@ -187,13 +228,17 @@ const buildAllocationFilters = (filters: Filters) => {
     );
   }
 
-  if (filters.project) {
-    queryFilters.push(where('projectId', '==', filters.project));
-  }
-
+  // Employee filtering
   if (filters.employee) {
     queryFilters.push(where('employeeId', '==', filters.employee));
   }
 
+  // Project filtering
+  if (filters.project) {
+    queryFilters.push(where('projectId', '==', filters.project));
+  }
+  if (filters.category && filters.category !== 'ALL') {
+    queryFilters.push(where('category', '==', filters.category));
+  }
   return queryFilters;
 };

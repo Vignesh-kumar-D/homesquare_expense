@@ -70,6 +70,7 @@ export const employeeFundService = {
           projectId,
           allocatedAmount: amount,
           spentAmount: 0,
+          category: 'Fund Allocated',
           remainingAmount: amount,
           lastUpdated: Timestamp.now(),
         });

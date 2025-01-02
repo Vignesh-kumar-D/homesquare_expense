@@ -11,12 +11,14 @@ export const useFilterOptions = () => {
     employees: [] as { value: string; label: string }[],
     projects: [] as { value: string; label: string }[],
     categories: [
-      { value: 'travel', label: 'Travel' },
-      { value: 'software', label: 'Software' },
-      { value: 'hardware', label: 'Hardware' },
-      { value: 'services', label: 'Services' },
-      { value: 'office', label: 'Office Supplies' },
-      { value: 'other', label: 'Other' },
+      { value: 'Travel', label: 'Travel' },
+      { value: 'Software', label: 'Software' },
+      { value: 'Hardware', label: 'Hardware' },
+      { value: 'Services', label: 'Services' },
+      { value: 'Office Supplies', label: 'Office Supplies' },
+      { value: 'Other', label: 'Other' },
+      { value: 'All', label: 'All' },
+      { value: 'Fund Allocated', label: 'Fund Allocated' },
     ],
   });
 

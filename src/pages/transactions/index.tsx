@@ -14,7 +14,7 @@ const Transactions: React.FC = () => {
     dateRange: { startDate: '', endDate: '' },
     employee: '',
     project: '',
-    category: '',
+    category: 'ALL',
     type: 'ALL',
   });
 

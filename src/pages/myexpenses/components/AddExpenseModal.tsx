@@ -64,6 +64,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     'Travel',
     'Services',
     'Office Supplies',
+    'Others',
   ];
 
   const validateForm = () => {
