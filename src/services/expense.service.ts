@@ -34,7 +34,7 @@ export const expenseService = {
       // Add expense
       const expenseRef = await addDoc(collection(db, 'expenses'), {
         ...expense,
-        status: 'pending',
+        status: 'approved',
         createdAt: Timestamp.now(),
       });
 
