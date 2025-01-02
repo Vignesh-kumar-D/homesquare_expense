@@ -7,6 +7,7 @@ export interface User {
   mobile: string;
   role: 'admin' | 'accountant' | 'employee';
   position: string;
+  createdAt: Timestamp;
 }
 
 export interface Budget {

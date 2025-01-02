@@ -18,7 +18,7 @@ declare global {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const { loginWithEmail, loginWithPhone } = useAuth();
-  const [loginMethod, setLoginMethod] = useState<'mobile' | 'email'>('mobile');
+  const [loginMethod, setLoginMethod] = useState<'mobile' | 'email'>('email');
   const [formData, setFormData] = useState({
     identifier: '', // mobile or email
     password: '', // password or OTP
@@ -133,21 +133,21 @@ const Login: React.FC = () => {
         </div>
 
         <div className={styles.methodSelector}>
-          <button
+          {/* <button
             className={`${styles.methodButton} ${
               loginMethod === 'mobile' ? styles.active : ''
             }`}
             onClick={() => handleMethodChange('mobile')}
           >
             Mobile
-          </button>
+          </button> */}
           <button
             className={`${styles.methodButton} ${
               loginMethod === 'email' ? styles.active : ''
             }`}
             onClick={() => handleMethodChange('email')}
           >
-            Email
+            Login
           </button>
         </div>
 

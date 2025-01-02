@@ -11,6 +11,7 @@ import {
   getProjects,
 } from '../../services/project.service';
 import Loader from '../../components/Loader';
+import { useAuth } from '../../context/AuthContext';
 
 const Projects: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const { user } = useAuth();
   // Fetch projects on component mount
   useEffect(() => {
     fetchProjects();
@@ -119,20 +120,25 @@ const Projects: React.FC = () => {
               <div className={styles.emptyIcon}>📋</div>
               <h2 className={styles.emptyTitle}>No Projects Yet</h2>
               <p className={styles.emptyText}>
-                Get started by adding your first project
+                {user?.role === 'admin'
+                  ? 'Get started by adding your first project'
+                  : 'You have no projects. ask admin to add project'}
               </p>
-              <button
-                className={styles.emptyButton}
-                onClick={() => setIsAddingProject(true)}
-              >
-                Add Project
-              </button>
+              {user?.role === 'admin' && (
+                <button
+                  className={styles.emptyButton}
+                  onClick={() => setIsAddingProject(true)}
+                >
+                  Add Project
+                </button>
+              )}
             </div>
           ) : (
             <ProjectGrid
               projects={projects}
               onSelectProject={(project) => navigate(`/projects/${project.id}`)}
               onEditProject={handleEditProject}
+              userRole={user?.role ?? 'employee'}
             />
           )}
         </div>

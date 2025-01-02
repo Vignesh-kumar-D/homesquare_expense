@@ -39,7 +39,11 @@ const Header: React.FC = () => {
       >
         <div
           className={styles.logo}
-          onClick={() => navigate('/dashboard')}
+          onClick={() => {
+            userRole === 'admin' || userRole === 'accountant'
+              ? navigate('/dashboard')
+              : navigate('/my-expenses"');
+          }}
           role="button"
           tabIndex={0}
         >
@@ -48,15 +52,17 @@ const Header: React.FC = () => {
 
         {/* Desktop Navigation */}
         <nav className={styles.desktopNav}>
-          <NavLink to="/dashboard" className={getNavLinkClass}>
-            Dashboard
-          </NavLink>
-
-          <NavLink to="/projects" className={getNavLinkClass}>
-            Projects
-          </NavLink>
-
-          {userRole === 'admin' && (
+          {(userRole === 'admin' || userRole === 'accountant') && (
+            <NavLink to="/dashboard" className={getNavLinkClass}>
+              Dashboard
+            </NavLink>
+          )}
+          {(userRole === 'admin' || userRole === 'accountant') && (
+            <NavLink to="/projects" className={getNavLinkClass}>
+              Projects
+            </NavLink>
+          )}
+          {(userRole === 'admin' || userRole === 'accountant') && (
             <NavLink to="/employees" className={getNavLinkClass}>
               Employees
             </NavLink>

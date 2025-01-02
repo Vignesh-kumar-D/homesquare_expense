@@ -1,35 +1,67 @@
-// src/pages/Profile/Profile.tsx
-import React, { useState } from 'react';
-import ChangePasswordModal from './components/ChangePasswordModal';
+import React, { useEffect, useState } from 'react';
+import { useProfile } from '../../hooks/useProfile';
+import Alert from '../../components/Alert';
 import styles from './Profile.module.css';
-
-interface UserProfile {
-  name: string;
-  role: 'admin' | 'accountant' | 'employee';
-  email: string;
-  mobile: string;
-  totalBalance: number;
-  joinedDate: string;
-  department: string;
-}
+import { useAuth } from '../../context/AuthContext';
+import Loader from '../../components/Loader';
 
 const Profile: React.FC = () => {
-  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-
-  // Mock user data - replace with actual user data
-  const user: UserProfile = {
-    name: 'John Doe',
-    role: 'employee',
-    email: 'john.doe@homesquare.com',
-    mobile: '+91 9876543210',
-    totalBalance: 25000,
-    joinedDate: '2023-01-15',
-    department: 'Engineering',
-  };
-
+  const [resetSent, setResetSent] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const { logout, user } = useAuth();
   const handleLogout = () => {
-    // Add logout logic
+    logout();
   };
+  const { profileData, loading, error, handlePasswordReset } = useProfile(
+    user?.id ?? ''
+  );
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (resetSent || resetError) {
+      timeoutId = setTimeout(() => {
+        setResetSent(false);
+        setResetError(null);
+      }, 10000); // Clear after 10 seconds
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [resetSent, resetError]);
+
+  const handlePasswordResetClick = async () => {
+    try {
+      setResetError(null);
+      await handlePasswordReset();
+      setResetSent(true);
+    } catch (error: any) {
+      // Handle specific Firebase auth errors
+      const errorMessage = (() => {
+        switch (error.code) {
+          case 'auth/invalid-email':
+            return 'Invalid email address';
+          case 'auth/user-not-found':
+            return 'No user found with this email';
+          case 'auth/too-many-requests':
+            return 'Too many attempts. Please try again later';
+          default:
+            return 'Failed to send reset email. Please try again';
+        }
+      })();
+      setResetError(errorMessage);
+    }
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error || !profileData) {
+    return <Alert type="error" message={error || 'Failed to load profile'} />;
+  }
 
   return (
     <div className={styles.container}>
@@ -37,13 +69,27 @@ const Profile: React.FC = () => {
         <h1 className={styles.title}>Account Profile</h1>
       </div>
 
+      {resetSent && (
+        <Alert
+          type="success"
+          message="Password reset email sent"
+          description="Please check your email to reset your password."
+        />
+      )}
+      {resetError && (
+        <Alert
+          type="error"
+          message="Password Reset Failed"
+          description={resetError}
+        />
+      )}
       <div className={styles.content}>
         <div className={styles.profileSection}>
           <div className={styles.profileHeader}>
-            <div className={styles.avatar}>{user.name.charAt(0)}</div>
+            <div className={styles.avatar}>{profileData.name.charAt(0)}</div>
             <div className={styles.userInfo}>
-              <h2 className={styles.userName}>{user.name}</h2>
-              <span className={styles.userRole}>{user.role}</span>
+              <h2 className={styles.userName}>{profileData.name}</h2>
+              <span className={styles.userRole}>{profileData.role}</span>
             </div>
           </div>
 
@@ -51,7 +97,7 @@ const Profile: React.FC = () => {
             <div className={styles.balanceHeader}>
               <span className={styles.balanceLabel}>Total Balance</span>
               <span className={styles.balanceAmount}>
-                ₹{user.totalBalance.toLocaleString()}
+                ₹{profileData.totalBalance.toLocaleString()}
               </span>
             </div>
             <div className={styles.balanceFooter}>
@@ -67,23 +113,25 @@ const Profile: React.FC = () => {
             <div className={styles.detailsGrid}>
               <div className={styles.detailItem}>
                 <span className={styles.detailLabel}>Email</span>
-                <span className={styles.detailValue}>{user.email}</span>
+                <span className={styles.detailValue}>{profileData.email}</span>
               </div>
 
               <div className={styles.detailItem}>
                 <span className={styles.detailLabel}>Mobile</span>
-                <span className={styles.detailValue}>{user.mobile}</span>
+                <span className={styles.detailValue}>{profileData.mobile}</span>
               </div>
 
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Department</span>
-                <span className={styles.detailValue}>{user.department}</span>
+                <span className={styles.detailLabel}>Position</span>
+                <span className={styles.detailValue}>
+                  {profileData.position}
+                </span>
               </div>
 
               <div className={styles.detailItem}>
                 <span className={styles.detailLabel}>Joined Date</span>
                 <span className={styles.detailValue}>
-                  {new Date(user.joinedDate).toLocaleDateString()}
+                  {new Date(profileData.joinedDate).toLocaleDateString()}
                 </span>
               </div>
             </div>
@@ -95,7 +143,7 @@ const Profile: React.FC = () => {
             <div className={styles.actionButtons}>
               <button
                 className={styles.changePasswordButton}
-                onClick={() => setIsChangePasswordOpen(true)}
+                onClick={handlePasswordResetClick}
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -110,7 +158,7 @@ const Profile: React.FC = () => {
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
-                Change Password
+                Reset Password
               </button>
 
               <button className={styles.logoutButton} onClick={handleLogout}>
@@ -134,16 +182,6 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {isChangePasswordOpen && (
-        <ChangePasswordModal
-          onClose={() => setIsChangePasswordOpen(false)}
-          onSubmit={(oldPassword, newPassword) => {
-            // Handle password change
-            setIsChangePasswordOpen(false);
-          }}
-        />
-      )}
     </div>
   );
 };

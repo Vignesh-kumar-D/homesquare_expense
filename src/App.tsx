@@ -86,7 +86,10 @@ const App: React.FC = () => {
           path="/projects"
           element={
             <Layout>
-              <PrivateRoute element={<Projects />} />
+              <PrivateRoute
+                element={<Projects />}
+                allowedRoles={['admin', 'accountant']}
+              />
             </Layout>
           }
         />
@@ -95,7 +98,10 @@ const App: React.FC = () => {
           path="/projects/:projectId"
           element={
             <Layout>
-              <PrivateRoute element={<ProjectDetails />} />
+              <PrivateRoute
+                element={<ProjectDetails />}
+                allowedRoles={['admin', 'accountant']}
+              />
             </Layout>
           }
         />
@@ -113,7 +119,10 @@ const App: React.FC = () => {
           path="/dashboard"
           element={
             <Layout>
-              <PrivateRoute element={<Dashboard />} allowedRoles={['admin']} />
+              <PrivateRoute
+                element={<Dashboard />}
+                allowedRoles={['admin', 'accountant']}
+              />
             </Layout>
           }
         />
@@ -122,7 +131,10 @@ const App: React.FC = () => {
           path="/employees"
           element={
             <Layout>
-              <PrivateRoute element={<Employees />} allowedRoles={['admin']} />
+              <PrivateRoute
+                element={<Employees />}
+                allowedRoles={['admin', 'accountant']}
+              />
             </Layout>
           }
         />

@@ -22,6 +22,7 @@ export const findUserByEmailOrPhone = async (identifier: string) => {
       mobile: data.mobile,
       role: data.role,
       position: data.position,
+      createdAt: data.createdAt,
     };
   } catch (error) {
     console.error('Error finding user:', error);

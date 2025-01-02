@@ -44,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             mobile: userData.mobile,
             role: userData.role,
             position: userData.position,
+            createdAt: userData.createdAt,
           });
         }
       } else {
@@ -79,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         mobile: existingUser.mobile,
         role: existingUser.role,
         position: existingUser.position,
+        createdAt: existingUser.createdAt,
       });
     } catch (error) {
       console.error('Email login error:', error);
