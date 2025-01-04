@@ -1,46 +1,179 @@
-# Getting Started with Create React App
+# HomeSquare Expense: Enterprise Project Management & Expense Tracking
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🔗 Live Demo
+[Live Application](https://homesquareinternal.netlify.app/)
 
-## Available Scripts
+### Demo Credentials
+1. **Admin View**
+   - Email: dvigneshkumar3@gmail.com
+   - Password: home_square
+2. **Employee View**
+   - Email: dvigneshkumar99@gmail.com
+   - Password: home_square
 
-In the project directory, you can run:
+## 📑 Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Screenshots](#screenshots)
+- [Installation](#installation)
+- [PWA Features](#pwa-features)
+- [Contributing](#contributing)
 
-### `npm start`
+## 🎯 Overview
+HomeSquare Expense is an enterprise-grade project expense management system that enables organizations to efficiently track project budgets, allocate funds, and monitor expenses. Built with scalability and user experience in mind, it provides real-time insights through interactive visualizations and supports both admin and employee workflows.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🏗️ Architecture
+```mermaid
+flowchart TB
+    subgraph Client["Frontend Layer"]
+        direction TB
+        UI["React + TypeScript"]
+        RC["Recharts\nData Visualization"]
+        PWA["PWA Layer\nService Worker"]
+        
+        subgraph StateManagement["Application State"]
+            Context["React Context"]
+            Hooks["Custom Hooks"]
+        end
+    end
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+    subgraph Auth["Authentication Layer"]
+        FireAuth["Firebase Auth"]
+        subgraph Roles["Role Management"]
+            Admin["Admin Access"]
+            Employee["Employee Access"]
+        end
+    end
 
-### `npm test`
+    subgraph DB["Database Layer"]
+        FireStore["Cloud Firestore"]
+        subgraph Collections["Data Collections"]
+            Projects["Projects"]
+            Expenses["Expenses"]
+            Users["Users"]
+            Budgets["Budget Allocations"]
+        end
+    end
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    UI --> StateManagement
+    UI --> RC
+    StateManagement --> FireAuth
+    FireAuth --> Roles
+    StateManagement --> FireStore
+    PWA --> UI
 
-### `npm run build`
+    Collections --> Projects
+    Collections --> Expenses
+    Collections --> Users
+    Collections --> Budgets
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    classDef frontend fill:#61DAFB,stroke:#20232a,stroke-width:2px
+    classDef auth fill:#FFA611,stroke:#1A1A1A,stroke-width:2px
+    classDef database fill:#4CAF50,stroke:#1A1A1A,stroke-width:2px
+    classDef pwa fill:#FF4081,stroke:#1A1A1A,stroke-width:2px,color:white
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    class Client frontend
+    class Auth auth
+    class DB database
+    class PWA pwa
+```
+## 🚀 Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Project Management
+- Create and manage multiple projects
+- Set and adjust project budgets
+- Track project timeline and status
+- Real-time budget utilization monitoring
 
-### `npm run eject`
+### Budget Allocation
+- Allocate funds to team members
+- Track allocation history
+- Monitor spending limits
+- Real-time balance updates
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Expense Tracking
+- Add and categorize expenses
+- Tag expenses to specific projects
+- Upload receipt documentation
+- Track expense history
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Analytics & Reporting
+- Interactive charts and graphs
+- Project profit visualization
+- Budget utilization trends
+- Custom report generation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 🛠️ Tech Stack
+- ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+- ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+- ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
+- ![Recharts](https://img.shields.io/badge/recharts-%23FF6384.svg?style=for-the-badge&logo=chartdotjs&logoColor=white)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 📸 Screenshots
+[Placeholder for Screenshots]
+- Dashboard Overview
+- Project Management Interface
+- Expense Entry Form
+- Analytics Dashboard
+- Budget Allocation Interface
 
-## Learn More
+## ⚙️ Installation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Prerequisites
+- Node.js >= 14.x
+- npm >= 6.x
+- Firebase account
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Local Development
+```bash
+# Clone the repository
+git clone [repository-url]
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+# Add your Firebase configuration to .env
+
+# Start development server
+npm start
+```
+### Environment Configuration
+Required environment variables:
+- REACT_APP_FIREBASE_API_KEY
+- REACT_APP_FIREBASE_AUTH_DOMAIN
+- REACT_APP_FIREBASE_PROJECT_ID
+- REACT_APP_FIREBASE_STORAGE_BUCKET
+- REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+- REACT_APP_FIREBASE_APP_ID
+
+## 📱 PWA Features
+- Responsive design for all device sizes
+- Progressive Web App capabilities
+- Offline support (Coming Soon)
+- Custom offline page with service worker implementation
+- Install to home screen functionality
+
+## 🌟 Key Technical Features
+- TypeScript for enhanced type safety
+- Real-time data synchronization
+- Role-based access control
+- Responsive design implementation
+- Scalable architecture
+- Comprehensive error handling
+- Performance optimized charts
+- Secure authentication flow
+
+## 🤝 Contributing
+This is an open-source project and contributions are welcome. Please follow these steps:
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## 📝 License
+[MIT](LICENSE)
