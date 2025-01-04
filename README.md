@@ -112,12 +112,26 @@ flowchart TB
 - ![Recharts](https://img.shields.io/badge/recharts-%23FF6384.svg?style=for-the-badge&logo=chartdotjs&logoColor=white)
 
 ## 📸 Screenshots
-[Placeholder for Screenshots]
-- Dashboard Overview
-- Project Management Interface
-- Expense Entry Form
-- Analytics Dashboard
-- Budget Allocation Interface
+**Profile Overview**
+
+<img width="1280" alt="Screenshot 2025-01-05 at 12 09 04 AM" src="https://github.com/user-attachments/assets/2d5ed4b1-8e3e-40e8-ad0c-55ed9350556a" />
+
+**Project Management Interface**
+
+<img width="1280" alt="Screenshot 2025-01-05 at 12 07 52 AM" src="https://github.com/user-attachments/assets/b8ed199e-6259-4fef-932e-dcc8fa245906" />
+
+**Expense Entry Form**
+  
+<img width="1279" alt="Screenshot 2025-01-05 at 12 11 22 AM" src="https://github.com/user-attachments/assets/d6488fa2-97ee-49f1-814f-9b25608bc26d" />
+
+**Analytics Dashboard**
+
+<img width="1280" alt="Screenshot 2025-01-05 at 12 07 42 AM" src="https://github.com/user-attachments/assets/5ae84663-9bfc-4004-9623-006c742f3a96" />
+
+**Budget Allocation Interface**
+  
+<img width="1280" alt="Screenshot 2025-01-05 at 12 08 32 AM" src="https://github.com/user-attachments/assets/e779fc04-f667-4948-90ca-1a2434611b46" />
+
 
 ## ⚙️ Installation
 
