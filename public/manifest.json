@@ -5,40 +5,43 @@
   "description": "An to allocate money to employees and track spending",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64",
-      "type": "image/x-icon"
+      "src": "images/icon_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     },
     {
-      "src": "logo192.png",
+      "src": "images/icon_1024x1024.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "1024x1024"
     },
     {
-      "src": "logo512.png",
+      "src": "images/icon_maskable_512x512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
+  "display": "fullscreen",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "screenshots": [
     {
-      "src": "logo512.png",
+      "src": "images/icon_720x1280.png",
       "type": "image/png",
-      "sizes": "512x512",
+      "sizes": "720x1280",
       "label": "Tablet Portrait View",
       "platform": "narrow"
     },
     {
-      "src": "logo512.png",
+      "src": "images/icon_1170x2532.png",
       "type": "image/png",
-      "sizes": "512x512",
+      "sizes": "1170x2532",
       "label": "Desktop View",
       "form_factor": "wide",
       "platform": "wide"
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
