@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Transactions from './pages/transactions';
 import MyExpenses from './pages/myexpenses';
 import Loader from './components/Loader';
+import NetworkStatus from './components/NetworkStatus';
 interface PrivateRouteProps {
   element: JSX.Element;
   allowedRoles?: Array<'admin' | 'accountant' | 'employee'>;
@@ -67,103 +68,106 @@ const PublicRoute: React.FC<{ element: JSX.Element }> = ({ element }) => {
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<PublicRoute element={<Login />} />} />
+    <>
+      <NetworkStatus />
+      <AuthProvider>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<PublicRoute element={<Login />} />} />
 
-        {/* Private routes */}
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <PrivateRoute element={<Dashboard />} />
-            </Layout>
-          }
-        />
+          {/* Private routes */}
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <PrivateRoute element={<Dashboard />} />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/projects"
-          element={
-            <Layout>
-              <PrivateRoute
-                element={<Projects />}
-                allowedRoles={['admin', 'accountant']}
-              />
-            </Layout>
-          }
-        />
+          <Route
+            path="/projects"
+            element={
+              <Layout>
+                <PrivateRoute
+                  element={<Projects />}
+                  allowedRoles={['admin', 'accountant']}
+                />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/projects/:projectId"
-          element={
-            <Layout>
-              <PrivateRoute
-                element={<ProjectDetails />}
-                allowedRoles={['admin', 'accountant']}
-              />
-            </Layout>
-          }
-        />
+          <Route
+            path="/projects/:projectId"
+            element={
+              <Layout>
+                <PrivateRoute
+                  element={<ProjectDetails />}
+                  allowedRoles={['admin', 'accountant']}
+                />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/profile"
-          element={
-            <Layout>
-              <PrivateRoute element={<Profile />} />
-            </Layout>
-          }
-        />
+          <Route
+            path="/profile"
+            element={
+              <Layout>
+                <PrivateRoute element={<Profile />} />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/dashboard"
-          element={
-            <Layout>
-              <PrivateRoute
-                element={<Dashboard />}
-                allowedRoles={['admin', 'accountant']}
-              />
-            </Layout>
-          }
-        />
+          <Route
+            path="/dashboard"
+            element={
+              <Layout>
+                <PrivateRoute
+                  element={<Dashboard />}
+                  allowedRoles={['admin', 'accountant']}
+                />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/employees"
-          element={
-            <Layout>
-              <PrivateRoute
-                element={<Employees />}
-                allowedRoles={['admin', 'accountant']}
-              />
-            </Layout>
-          }
-        />
+          <Route
+            path="/employees"
+            element={
+              <Layout>
+                <PrivateRoute
+                  element={<Employees />}
+                  allowedRoles={['admin', 'accountant']}
+                />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/transactions"
-          element={
-            <Layout>
-              <PrivateRoute
-                element={<Transactions />}
-                allowedRoles={['admin', 'accountant']}
-              />
-            </Layout>
-          }
-        />
+          <Route
+            path="/transactions"
+            element={
+              <Layout>
+                <PrivateRoute
+                  element={<Transactions />}
+                  allowedRoles={['admin', 'accountant']}
+                />
+              </Layout>
+            }
+          />
 
-        <Route
-          path="/my-expenses"
-          element={
-            <Layout>
-              <PrivateRoute element={<MyExpenses />} />
-            </Layout>
-          }
-        />
+          <Route
+            path="/my-expenses"
+            element={
+              <Layout>
+                <PrivateRoute element={<MyExpenses />} />
+              </Layout>
+            }
+          />
 
-        {/* Catch all route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AuthProvider>
+          {/* Catch all route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </>
   );
 };
 

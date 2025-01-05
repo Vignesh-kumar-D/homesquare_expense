@@ -9,7 +9,6 @@ import {
   Timestamp,
   query,
   orderBy,
-  where,
   getDoc,
 } from 'firebase/firestore';
 import { Project, ProjectFormData } from '../pages/projects/types';

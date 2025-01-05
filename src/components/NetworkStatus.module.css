@@ -1,0 +1,12 @@
+/* src/components/NetworkStatus.module.css */
+.offlineBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ff4444;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  z-index: 1000;
+}

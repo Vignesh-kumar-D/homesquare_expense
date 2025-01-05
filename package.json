@@ -44,6 +44,7 @@
     ]
   },
   "devDependencies": {
-    "@types/firebase": "^2.4.32"
+    "@types/firebase": "^2.4.32",
+    "@types/serviceworker": "^0.0.108"
   }
 }

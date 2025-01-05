@@ -16,11 +16,6 @@ import { EmployeeFund, Project } from '../pages/projects/types';
 import { Expense } from '../pages/myexpenses/types';
 import { User } from '../configs/firebase.types';
 
-interface FilterResult {
-  filters: QueryFieldFilterConstraint[];
-  skipQuery: boolean;
-}
-
 const transformExpenses = async (expensesSnapshot: QuerySnapshot) => {
   const transactions: Transaction[] = [];
 
