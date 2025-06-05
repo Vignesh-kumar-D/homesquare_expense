@@ -22,7 +22,8 @@ const NetworkStatus: React.FC = () => {
 
   return (
     <div className={styles.offlineBar}>
-      You're offline. Some features may be unavailable.
+      You're offline. Some features may be unavailable. Please turn on your
+      internet
     </div>
   );
 };
